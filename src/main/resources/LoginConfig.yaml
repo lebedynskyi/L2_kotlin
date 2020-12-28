@@ -1,0 +1,7 @@
+debug: true
+
+network:
+  loginServerIp: 127.0.0.1
+  loginServerPort: 2106
+  gameServerIp: 127.0.01
+  gameServerPort: 3300
