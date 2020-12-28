@@ -1,18 +1,20 @@
 import config.NetworkConfig
-import packets.server.Init
+import encryption.LoginCrypt
+import util.generateRsa128PublicKeyPair
 import util.printDebug
 import java.nio.channels.Selector
 import java.nio.channels.SelectionKey
 import java.nio.channels.ServerSocketChannel
 import java.net.InetSocketAddress
-import java.util.*
+import java.security.SecureRandom
+import kotlin.random.Random
 
 class LoginServer(
     networkConfig: NetworkConfig
 ) {
-    private val clientSelector: Selector = Selector.open()
+    private val connectionSelector: Selector = Selector.open()
     private val clientsAddress = InetSocketAddress(networkConfig.loginServerIp, networkConfig.loginServerPort)
-
+    private val secureRandom = SecureRandom()
     @Volatile
     private var running = false
 
@@ -23,24 +25,24 @@ class LoginServer(
     fun startListenPlayers() {
         val socket = ServerSocketChannel.open().apply {
             configureBlocking(false)
-            register(clientSelector, SelectionKey.OP_ACCEPT)
+            register(connectionSelector, SelectionKey.OP_ACCEPT)
             bind(clientsAddress)
         }
 
         printDebug("Login server registered at $clientsAddress")
-        loopSelection(socket)
+        loopNewConnections(socket)
     }
 
-    private fun loopSelection(socket: ServerSocketChannel) {
+    private fun loopNewConnections(socket: ServerSocketChannel) {
         running = true
         while (running) {
-            val count = clientSelector.select()
+            val count = connectionSelector.select()
             printDebug("Waiting for new connections")
             if (count == 0) {
                 continue
             }
 
-            val keys: Set<*> = clientSelector.selectedKeys()
+            val keys: Set<*> = connectionSelector.selectedKeys()
             val keysIterator = keys.toMutableList().listIterator()
             while (keysIterator.hasNext()) {
                 val key = keysIterator.next() as SelectionKey
@@ -65,12 +67,17 @@ class LoginServer(
         val clientSocket = socket.accept().apply {
             configureBlocking(false)
         }
-        clientSocket.register(clientSelector, SelectionKey.OP_READ and SelectionKey.OP_WRITE);
-        val gameClient = GameClient(UUID.randomUUID(), clientSocket)
+        clientSocket.register(connectionSelector, SelectionKey.OP_READ)
+
+        val blowFishKey = ByteArray(16).also {
+            secureRandom.nextBytes(it)
+        }
+        val rsaPair = generateRsa128PublicKeyPair()
+        val gameClient = GameClient(Random.nextInt(Int.MAX_VALUE), clientSocket, LoginCrypt(rsaPair, blowFishKey))
         key.attach(gameClient)
         printDebug("Accepted new connection from ${(clientSocket.remoteAddress as InetSocketAddress).hostString}")
 
-        gameClient.sendPacket(Init())
+        gameClient.sendInitPacket()
     }
 }
 

@@ -12,7 +12,8 @@ repositories {
 }
 
 dependencies {
-    implementation ("com.sksamuel.hoplite:hoplite-core:1.3.11")
+    implementation ("com.sksamuel.hoplite:hoplite-core:1.3.12")
+    implementation ("com.sksamuel.hoplite:hoplite-yaml:1.3.12")
     testImplementation(kotlin("test-junit"))
 }
 
