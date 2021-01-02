@@ -3,18 +3,10 @@
  * Intro Socket
  * Basic Connection between Client and Server
  */
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.Socket;
+import java.nio.ByteBuffer;
 import java.util.Scanner;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
 import java.io.InputStreamReader;
 
 public class EchoClient {
@@ -44,13 +36,13 @@ public class EchoClient {
             System.out.println("----------------------------------------------------------");
 
             //read  a line from the server
-            InputStreamReader socket_reader = new InputStreamReader(client.getInputStream());
+            InputStream is = client.getInputStream();
+            InputStreamReader socket_reader = new InputStreamReader(is);
             BufferedReader in = new BufferedReader(socket_reader);
             String output_message = in.readLine();
 
             //write the line to System.out
             System.out.println("Message From the Server : " + output_message);
-
 
             System.out.println("Write a Message and Press Enter to Send it to Server : ");
             InputStreamReader input_reader = new InputStreamReader(System.in);

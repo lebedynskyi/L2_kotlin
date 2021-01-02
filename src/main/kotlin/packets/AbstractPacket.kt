@@ -13,7 +13,7 @@ string – Text(UTF8).Each letter is 2 bytes, 1st - the code of letter, 2nd –
 number of code table. The end of line is 0 symbol
  */
 abstract class AbstractPacket(
-    val defaultPacketSize: Int = 128
+    defaultPacketSize: Int = 128
 ) {
     protected val bbuffer = ByteBuffer.allocate(defaultPacketSize)
 

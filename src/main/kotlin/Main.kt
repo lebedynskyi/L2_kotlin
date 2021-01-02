@@ -17,7 +17,7 @@ fun main(args: Array<String>) {
     IS_DEBUG = config.debug
     val server = LoginServer(config.network)
     server.loadServerData()
-    server.startListenPlayers()
+    server.startListenConnections()
 }
 
 private fun readConfig(filePath: String?): LoginConfig {
