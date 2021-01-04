@@ -11,11 +11,12 @@ import java.security.SecureRandom
 import kotlin.random.Random
 
 class LoginServer(
-        networkConfig: NetworkConfig
+        private val networkConfig: NetworkConfig
 ) {
     private val connectionSelector: Selector = Selector.open()
-    private val clientsAddress = InetSocketAddress(networkConfig.loginServerIp, networkConfig.loginServerPort)
     private val secureRandom = SecureRandom()
+
+    private lateinit var clientsAddress: InetSocketAddress
     private lateinit var blowFishKeys: Array<ByteArray>
     private lateinit var rsaPirs: Array<KeyPair>
 
@@ -23,6 +24,12 @@ class LoginServer(
     private var running = false
 
     fun loadServerData() {
+        clientsAddress = if (networkConfig.loginServerIp.isBlank() || networkConfig.loginServerIp == "*") {
+            InetSocketAddress(networkConfig.loginServerPort)
+        } else {
+            InetSocketAddress(networkConfig.loginServerIp, networkConfig.loginServerPort)
+        }
+
         blowFishKeys = Array(1) { secureRandom.generateSeed(16) }
         printDebug("Generated ${blowFishKeys.size} blowfish keys")
 
@@ -72,8 +79,6 @@ class LoginServer(
         val gameClient = LoginClient(LoginConnection(Random.nextInt(Int.MAX_VALUE), clientSocket, clientAddress, LoginCrypt(blowFishKeys.random(), rsaPirs.random())))
         clientKey.attach(gameClient)
         printDebug("Accepted new connection from ${clientAddress.hostString}")
-
-        gameClient.sendInitPacket()
     }
 }
 

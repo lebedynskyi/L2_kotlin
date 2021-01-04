@@ -7,9 +7,9 @@ fun printSection(section: String) {
     val sb = StringBuilder(80)
     for (i in 0 until (73 - section.length)) sb.append("-")
 
-
-    append(sb, "=[ ", section, " ]")
-    println("LoginServer: $section")
+    append(sb, " [ ", section, " ]")
+//    println("LoginServer: $section")
+    println(sb.toString())
 }
 
 fun printDebug(message: String) {

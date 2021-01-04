@@ -12,6 +12,15 @@ class CryptUtil {
             return generator.genKeyPair()
         }
 
+        /**
+         * Packet is first XOR encoded with <code>key</code>.<br>
+         * Then, the last 4 bytes are overwritten with the the XOR "key".<br>
+         * Thus this assume that there is enough room for the key to fit without overwriting data.
+         * @param raw The raw bytes to be encrypted
+         * @param offset The begining of the data to be encrypted
+         * @param size Length of the data to be encrypted
+         * @param key The 4 bytes (int) XOR key
+         */
         fun encodeXor(raw: ByteArray, offset: Int, size: Int, key: Int) {
             val stop = size - 8
             var pos = 4 + offset
@@ -40,7 +49,7 @@ class CryptUtil {
         }
 
         fun appendChecksum() {
-
+            TODO("Not yet")
         }
     }
 }

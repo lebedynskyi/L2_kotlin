@@ -1,15 +1,15 @@
-import packets.AbstractPacket
+import packets.ServerPacket
 
 class LoginClient(
         val connection: LoginConnection,
         var connectionStatus: ConnectionStatus = ConnectionStatus.ACCEPTED
 ) {
-    fun sendInitPacket() {
+    init {
         connection.sendInitPacket()
     }
 
-    private fun sendPacket(packet: AbstractPacket) {
-        TODO("Not implemented")
+    private fun sendPacket(packet: ServerPacket) {
+        connection.sendPacket(packet)
     }
 }
 

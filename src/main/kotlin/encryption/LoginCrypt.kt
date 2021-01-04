@@ -1,6 +1,7 @@
 package encryption
 
 import java.security.KeyPair
+import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.random.Random
 
 val STATIC_BLOW_FISH_KEY = ByteArray(16) {
@@ -32,26 +33,29 @@ class LoginCrypt(
     val staticCrypt = CryptEngine(STATIC_BLOW_FISH_KEY)
     val generalCrypt = CryptEngine(blowFishKey)
 
+    private var isStatic = AtomicBoolean(true)
+
     // This is side effect function. Original array inside buffer will be modified
-    fun encryptInit(raw: ByteArray, offset: Int, size: Int): Int {
-        //Reserve Checksum  4 + XOR key 4
-        var newSize = size + 8
-        // Padding.. Packets should be divided on 8
-        newSize += 8 - newSize % 8
+    fun encrypt(raw: ByteArray, offset: Int, originalSize: Int): Int {
+        // Reserve for checksum
+        var newSize = originalSize + 4
+        if (isStatic.getAndSet(false)) {
+            // Reserve for XOR key in the end
+            newSize += 4
 
-        CryptUtil.encodeXor(raw, offset, newSize, Random.nextInt())
-        staticCrypt.encrypt(raw, offset, newSize)
-        return newSize
-    }
+            // Padding.. The size of packet should be divided by 8
+            newSize += 8 - newSize % 8
 
-    fun encrypt(raw: ByteArray, offset: Int, size: Int): Int {
-        //Reserve Checksum  4
-        var newSize = size + 4
+            CryptUtil.encodeXor(raw, offset, newSize, Random.nextInt())
+            staticCrypt.encrypt(raw, offset, newSize)
+            print("dd")
+        } else {
+            // Padding.. The size of packet should be divided by 8
+            newSize += 8 - newSize % 8
+            CryptUtil.appendChecksum()
+            generalCrypt.encrypt(raw, offset, newSize)
+        }
 
-        TODO("Not implemnted yet")
-
-        // padding
-        newSize =  8 - newSize % 8
         return newSize
     }
 
