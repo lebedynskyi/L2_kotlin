@@ -8,6 +8,7 @@ import java.nio.channels.ServerSocketChannel
 import java.net.InetSocketAddress
 import java.security.KeyPair
 import java.security.SecureRandom
+import java.security.Security
 import kotlin.random.Random
 
 class LoginServer(
@@ -48,7 +49,6 @@ class LoginServer(
         running = true
         while (running) {
             val count = connectionSelector.select()
-            printDebug("Waiting for new connections")
             if (count == 0) {
                 continue
             }
