@@ -3,13 +3,23 @@ package encryption
 import java.security.KeyPair
 import java.security.KeyPairGenerator
 import java.security.SecureRandom
+import java.security.spec.RSAKeyGenParameterSpec
 
 class CryptUtil {
     companion object {
+        private val keygen = KeyPairGenerator.getInstance("RSA").apply {
+            initialize(RSAKeyGenParameterSpec(1024, RSAKeyGenParameterSpec.F4))
+        }
+
+        private val secureRandom = SecureRandom()
+
+
         fun generateRsa128PublicKeyPair(): KeyPair {
-            val generator = KeyPairGenerator.getInstance("RSA")
-            generator.initialize(784, SecureRandom())
-            return generator.genKeyPair()
+            return keygen.genKeyPair()
+        }
+
+        fun generateBlowFishKey(): ByteArray {
+            return secureRandom.generateSeed(16)
         }
 
         /**
@@ -48,8 +58,49 @@ class CryptUtil {
             raw[pos] = (ecx shr 24 and 0xFF).toByte()
         }
 
-        fun appendChecksum() {
-            TODO("Not yet")
+        fun verifyChecksum(raw: ByteArray, offset: Int, size: Int): Boolean {
+            // check if size is multiple of 4 and if there is more then only the checksum
+            if (size and 3 != 0 || size <= 4) return false
+            var chksum: Long = 0
+            val count = size - 4
+            var check: Long = -1
+            var i: Int = offset
+            while (i < count) {
+                check = (raw[i].toLong() and 0xff)
+                check = check or (raw[i + 1].toLong() shl 8 and 0xff00)
+                check = check or (raw[i + 2].toLong() shl 0x10 and 0xff0000)
+                check = check or (raw[i + 3].toLong() shl 0x18 and -0x1000000)
+                chksum = chksum xor check
+                i += 4
+            }
+            check = (raw[i].toInt() and 0xff).toLong()
+            check = check or (raw[i + 1].toLong() shl 8 and 0xff00)
+            check = check or (raw[i + 2].toLong() shl 0x10 and 0xff0000)
+            check = check or (raw[i + 3].toLong() shl 0x18 and -0x1000000)
+            return check == chksum
+        }
+
+        fun appendChecksum(raw: ByteArray, offset: Int, size: Int) {
+            var chksum: Long = 0
+            val count = size - 4
+            var ecx: Long
+            var i = offset
+            while (i < count) {
+                ecx = (raw[i].toLong() and 0xff)
+                ecx = ecx or (raw[i + 1].toLong() shl 8 and 0xff00)
+                ecx = ecx or (raw[i + 2].toLong() shl 0x10 and 0xff0000)
+                ecx = ecx or (raw[i + 3].toLong() shl 0x18 and -0x1000000)
+                chksum = chksum xor ecx
+                i += 4
+            }
+            ecx = (raw[i].toLong() and 0xff)
+            ecx = ecx or (raw[i + 1].toLong() shl 8 and 0xff00)
+            ecx = ecx or (raw[i + 2].toLong() shl 0x10 and 0xff0000)
+            ecx = ecx or (raw[i + 3].toLong() shl 0x18 and -0x1000000)
+            raw[i] = (chksum and 0xff).toByte()
+            raw[i + 1] = (chksum shr 0x08 and 0xff).toByte()
+            raw[i + 2] = (chksum shr 0x10 and 0xff).toByte()
+            raw[i + 3] = (chksum shr 0x18 and 0xff).toByte()
         }
     }
 }

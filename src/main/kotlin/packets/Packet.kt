@@ -12,10 +12,17 @@ string – Text(UTF8).Each letter is 2 bytes, 1st - the code of letter, 2nd –
 number of code table. The end of line is 0 symbol
  */
 
+// todo save buffer..
+// todo enable write via helper methods
+// clear saved buffer
+// return written
+
+const val SIZE_HEADER_SIZE = 2
+
 abstract class ServerPacket {
-    // todo save buffer..
-    // todo enable write via helper methods
-    // clear saved buffer
-    // return written
     abstract fun writeInto(buffer: ByteBuffer)
+}
+
+abstract class ClientPacket {
+    abstract fun readInto(buffer: ByteBuffer)
 }

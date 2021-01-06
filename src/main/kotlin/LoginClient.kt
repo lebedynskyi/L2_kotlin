@@ -1,3 +1,4 @@
+import packets.ClientPacket
 import packets.ServerPacket
 
 class LoginClient(
@@ -8,8 +9,12 @@ class LoginClient(
         connection.sendInitPacket()
     }
 
-    private fun sendPacket(packet: ServerPacket) {
+    fun sendPacket(packet: ServerPacket) {
         connection.sendPacket(packet)
+    }
+
+    fun readPacket() : ClientPacket {
+        return connection.readPacket()
     }
 }
 

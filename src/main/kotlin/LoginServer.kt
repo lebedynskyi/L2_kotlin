@@ -8,14 +8,12 @@ import java.nio.channels.ServerSocketChannel
 import java.net.InetSocketAddress
 import java.security.KeyPair
 import java.security.SecureRandom
-import java.security.Security
 import kotlin.random.Random
 
 class LoginServer(
         private val networkConfig: NetworkConfig
 ) {
     private val connectionSelector: Selector = Selector.open()
-    private val secureRandom = SecureRandom()
 
     private lateinit var clientsAddress: InetSocketAddress
     private lateinit var blowFishKeys: Array<ByteArray>
@@ -31,7 +29,7 @@ class LoginServer(
             InetSocketAddress(networkConfig.loginServerIp, networkConfig.loginServerPort)
         }
 
-        blowFishKeys = Array(1) { secureRandom.generateSeed(16) }
+        blowFishKeys = Array(1) { CryptUtil.generateBlowFishKey() }
         printDebug("Generated ${blowFishKeys.size} blowfish keys")
 
         rsaPirs = Array(1) { CryptUtil.generateRsa128PublicKeyPair() }
@@ -59,7 +57,7 @@ class LoginServer(
                 val key = keysIterator.next() as SelectionKey
                 when {
                     key.isAcceptable -> acceptConnection(socketChannel)
-                    key.isReadable -> printDebug("Ready to read")
+                    key.isReadable -> readPacket(key)
                     key.isWritable -> printDebug("Ready to write")
                 }
 
@@ -76,9 +74,14 @@ class LoginServer(
         val clientAddress = clientSocket.remoteAddress as InetSocketAddress
         val clientKey = clientSocket.register(connectionSelector, SelectionKey.OP_READ)
 
-        val gameClient = LoginClient(LoginConnection(Random.nextInt(Int.MAX_VALUE), clientSocket, clientAddress, LoginCrypt(blowFishKeys.random(), rsaPirs.random())))
-        clientKey.attach(gameClient)
+        val client = LoginClient(LoginConnection(Random.nextInt(Int.MAX_VALUE), clientSocket, clientAddress, LoginCrypt(blowFishKeys.random(), rsaPirs.random())))
+        clientKey.attach(client)
         printDebug("Accepted new connection from ${clientAddress.hostString}")
+    }
+
+    private fun readPacket(key: SelectionKey) {
+        val client = key.attachment() as LoginClient
+        val packet = client.readPacket()
     }
 }
 
