@@ -7,13 +7,13 @@ import java.nio.channels.SelectionKey
 import java.nio.channels.ServerSocketChannel
 import java.net.InetSocketAddress
 import java.security.KeyPair
-import java.security.SecureRandom
 import kotlin.random.Random
 
 class LoginServer(
         private val networkConfig: NetworkConfig
 ) {
     private val connectionSelector: Selector = Selector.open()
+    private val packetHandler = PacketHandler()
 
     private lateinit var clientsAddress: InetSocketAddress
     private lateinit var blowFishKeys: Array<ByteArray>
@@ -46,8 +46,7 @@ class LoginServer(
         printDebug("Login server registered at $clientsAddress")
         running = true
         while (running) {
-            val count = connectionSelector.select()
-            if (count == 0) {
+            if (connectionSelector.select() == 0) {
                 continue
             }
 
@@ -55,10 +54,12 @@ class LoginServer(
             val keysIterator = keys.toMutableList().listIterator()
             while (keysIterator.hasNext()) {
                 val key = keysIterator.next() as SelectionKey
+                printDebug("Has key")
                 when {
                     key.isAcceptable -> acceptConnection(socketChannel)
                     key.isReadable -> readPacket(key)
                     key.isWritable -> printDebug("Ready to write")
+                    else -> printDebug("Unknown state of key")
                 }
 
                 keysIterator.remove()
@@ -73,15 +74,23 @@ class LoginServer(
 
         val clientAddress = clientSocket.remoteAddress as InetSocketAddress
         val clientKey = clientSocket.register(connectionSelector, SelectionKey.OP_READ)
+        printDebug("Accepted new connection from ${clientAddress.hostString}")
 
         val client = LoginClient(LoginConnection(Random.nextInt(Int.MAX_VALUE), clientSocket, clientAddress, LoginCrypt(blowFishKeys.random(), rsaPirs.random())))
         clientKey.attach(client)
-        printDebug("Accepted new connection from ${clientAddress.hostString}")
     }
 
     private fun readPacket(key: SelectionKey) {
+        printDebug("Read packet")
         val client = key.attachment() as LoginClient
         val packet = client.readPacket()
+        if (packet == null || !packetHandler.handle(client, packet)) {
+            closeConnection(client)
+        }
+    }
+
+    private fun closeConnection(client: LoginClient) {
+        client.connection.closeConnection()
     }
 }
 

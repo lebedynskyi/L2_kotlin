@@ -1,9 +1,8 @@
 import encryption.LoginCrypt
 import packets.ClientPacket
-import packets.SIZE_HEADER_SIZE
+import packets.PACKET_DATA_HEADER_SIZE
 import packets.ServerPacket
 import packets.client.LoginClientPacketParser
-import packets.client.RequestGGAuth
 import packets.server.Init
 import util.printDebug
 import util.toHexString
@@ -13,7 +12,7 @@ import java.nio.ByteOrder
 import java.nio.channels.SocketChannel
 
 class LoginConnection(
-        private val sessionId: Int,
+        val sessionId: Int,
         private val socketChannel: SocketChannel,
         private val remoteAddress: InetSocketAddress,
         private val loginCrypt: LoginCrypt
@@ -36,7 +35,7 @@ class LoginConnection(
         tempPacketBuffer.clear()
 
         // reserve space for the size
-        tempPacketBuffer.position(SIZE_HEADER_SIZE)
+        tempPacketBuffer.position(PACKET_DATA_HEADER_SIZE)
 
         //Write packet to buffer
         val dataStartPosition = tempPacketBuffer.position()
@@ -48,7 +47,7 @@ class LoginConnection(
 
         // Write final size to reserved header
         tempPacketBuffer.position(0)
-        tempPacketBuffer.putShort((encryptedSize + SIZE_HEADER_SIZE).toShort())
+        tempPacketBuffer.putShort((encryptedSize + PACKET_DATA_HEADER_SIZE).toShort())
 
         // Set position to end of packet
 
@@ -57,13 +56,16 @@ class LoginConnection(
         // Required to write into socket
         tempPacketBuffer.flip()
         socketChannel.write(tempPacketBuffer)
-        printDebug("Sent init packet ->${tempPacketBuffer.toHexString()}")
+        printDebug("Sent packet ->${tempPacketBuffer.toHexString()}")
     }
 
-    fun readPacket(): ClientPacket {
+    fun readPacket(): ClientPacket? {
         readBuffer.clear()
         socketChannel.read(readBuffer)
-        packetParser.parsePacket(readBuffer)
-        return RequestGGAuth()
+        return packetParser.parsePacket(readBuffer)
+    }
+
+    fun closeConnection(reason: ServerPacket? = null) {
+        socketChannel.close()
     }
 }

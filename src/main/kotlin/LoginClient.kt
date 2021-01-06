@@ -13,7 +13,7 @@ class LoginClient(
         connection.sendPacket(packet)
     }
 
-    fun readPacket() : ClientPacket {
+    fun readPacket() : ClientPacket? {
         return connection.readPacket()
     }
 }

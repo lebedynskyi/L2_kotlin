@@ -14,15 +14,17 @@ number of code table. The end of line is 0 symbol
 
 // todo save buffer..
 // todo enable write via helper methods
-// clear saved buffer
-// return written
+// TODO clear saved buffer
+// TODO return written
 
-const val SIZE_HEADER_SIZE = 2
+const val PACKET_DATA_HEADER_SIZE = 2
 
 abstract class ServerPacket {
     abstract fun writeInto(buffer: ByteBuffer)
 }
 
-abstract class ClientPacket {
-    abstract fun readInto(buffer: ByteBuffer)
+abstract class ClientPacket(
+    val opCode: Int
+) {
+    abstract fun readFrom(buffer: ByteBuffer)
 }
