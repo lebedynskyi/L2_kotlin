@@ -1,11 +1,19 @@
 package packets.client
 
 import packets.ClientPacket
-import java.nio.ByteBuffer
 
-class RequestGGAuth(opCode: Int): ClientPacket(opCode) {
-    var sessionId : Int = -1
-    override fun readFrom(buffer: ByteBuffer) {
-        sessionId = buffer.int
+class RequestGGAuth : ClientPacket() {
+    var sessionId: Int = -1
+    var _data1: Int = -1
+    var _data2: Int = -1
+    var _data3: Int = -1
+    var _data4: Int = -1
+
+    override fun read() {
+        sessionId = readD()
+        _data1 = readD()
+        _data2 = readD()
+        _data3 = readD()
+        _data4 = readD()
     }
 }

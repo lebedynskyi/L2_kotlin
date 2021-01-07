@@ -24,7 +24,7 @@ class LoginClientPacketParser(val loginCrypt: LoginCrypt) {
     private fun parsePacketByOpcode(buffer: ByteBuffer): ClientPacket? {
         val opcode = buffer.get().toInt()
         val packet = when (opcode) {
-            0x07 -> RequestGGAuth(opcode)
+            0x07 -> RequestGGAuth()
             else -> {
                 printDebug("Unknown packet with opcode $opcode")
                 null

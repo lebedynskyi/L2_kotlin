@@ -2,15 +2,15 @@ import config.NetworkConfig
 import encryption.CryptUtil
 import encryption.LoginCrypt
 import util.printDebug
-import java.nio.channels.Selector
-import java.nio.channels.SelectionKey
-import java.nio.channels.ServerSocketChannel
 import java.net.InetSocketAddress
+import java.nio.channels.SelectionKey
+import java.nio.channels.Selector
+import java.nio.channels.ServerSocketChannel
 import java.security.KeyPair
 import kotlin.random.Random
 
 class LoginServer(
-        private val networkConfig: NetworkConfig
+    private val networkConfig: NetworkConfig
 ) {
     private val connectionSelector: Selector = Selector.open()
     private val packetHandler = PacketHandler()
@@ -51,19 +51,17 @@ class LoginServer(
             }
 
             val keys: Set<*> = connectionSelector.selectedKeys()
-            val keysIterator = keys.toMutableList().listIterator()
-            while (keysIterator.hasNext()) {
-                val key = keysIterator.next() as SelectionKey
-                printDebug("Has key")
+            keys.forEach {
+                val key = it as SelectionKey
                 when {
                     key.isAcceptable -> acceptConnection(socketChannel)
                     key.isReadable -> readPacket(key)
                     key.isWritable -> printDebug("Ready to write")
                     else -> printDebug("Unknown state of key")
                 }
-
-                keysIterator.remove()
             }
+
+            connectionSelector.selectedKeys().clear()
         }
     }
 
@@ -76,7 +74,14 @@ class LoginServer(
         val clientKey = clientSocket.register(connectionSelector, SelectionKey.OP_READ)
         printDebug("Accepted new connection from ${clientAddress.hostString}")
 
-        val client = LoginClient(LoginConnection(Random.nextInt(Int.MAX_VALUE), clientSocket, clientAddress, LoginCrypt(blowFishKeys.random(), rsaPirs.random())))
+        val client = LoginClient(
+            LoginConnection(
+                Random.nextInt(Int.MAX_VALUE), clientSocket, clientAddress, LoginCrypt(
+                    blowFishKeys.random(),
+                    rsaPirs.random()
+                )
+            )
+        )
         clientKey.attach(client)
     }
 
@@ -84,7 +89,9 @@ class LoginServer(
         printDebug("Read packet")
         val client = key.attachment() as LoginClient
         val packet = client.readPacket()
-        if (packet == null || !packetHandler.handle(client, packet)) {
+        if (packet != null && packetHandler.handle(client, packet)) {
+            key.interestOps(key.interestOps() or SelectionKey.OP_READ)
+        }else {
             closeConnection(client)
         }
     }

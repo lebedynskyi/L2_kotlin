@@ -9,29 +9,29 @@ class Init(
         val blowFishKey: ByteArray
 ) : ServerPacket() {
 
-    override fun writeInto(buffer: ByteBuffer) {
+    override fun write() {
         // init packet id
-        buffer.put(0x00)
+        writeC(0x00)
 
         // session id
-        buffer.putInt(sessionId)
+        writeD(sessionId)
 
         // protocol revision
-        buffer.putInt(0x0000c621)
+        writeD(0x0000c621)
 
         // RSA Public Key
-        buffer.put(publicKey)
+        writeB(publicKey)
 
         // unk GG related?
-        buffer.putInt(0x29DD954E)
-        buffer.putInt(0x77C39CFC)
-        buffer.putInt(0x97ADB620.toInt())
-        buffer.putInt(0x07BDE0F7)
+        writeD(0x29DD954E)
+        writeD(0x77C39CFC)
+        writeD(0x97ADB620.toInt())
+        writeD(0x07BDE0F7)
 
         // BlowFish key
-        buffer.put(blowFishKey)
+        writeB(blowFishKey)
 
         // null termination ;)
-        buffer.put(0x00)
+        writeC(0x00)
     }
 }
