@@ -5,8 +5,9 @@ import util.printSection
 import java.io.FileInputStream
 import kotlin.io.path.ExperimentalPathApi
 
+const val LoginConfigResource = "LoginConfig.yaml"
+
 var IS_DEBUG = false
-val LoginConfigResource = "LoginConfig.yaml"
 
 @ExperimentalPathApi
 fun main(args: Array<String>) {

@@ -90,10 +90,9 @@ class LoginServer(
     }
 
     private fun readPacket(key: SelectionKey) {
-        printDebug("Read packet")
         val client = key.attachment() as LoginClient
         val packet = client.readPacket()
-        printDebug("Parsed $packet, Handle it")
+        printDebug("Parsed $packet")
         if (packet == null || !packetHandler.handle(client, packet)) {
             printDebug("Packet or handler is null. Close connection")
             closeConnection(client)
@@ -101,7 +100,7 @@ class LoginServer(
     }
 
     private fun closeConnection(client: LoginClient) {
-        client.connection.closeConnection()
+        client.closeConnection()
     }
 }
 

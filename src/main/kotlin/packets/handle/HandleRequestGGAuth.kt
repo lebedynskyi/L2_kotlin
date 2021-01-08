@@ -11,28 +11,12 @@ class HandleRequestGGAuth(
     private val client: LoginClient
 ) : BaseHandler() {
     override fun run() {
-        when (client.connectionStatus) {
-            ConnectionStatus.ACCEPTED -> handleConnectedStatus()
-            ConnectionStatus.AUTH_GG -> handleAuthGGStatus()
-            ConnectionStatus.AUTH_LOGIN -> handleAuthLoginStatius()
-        }
-    }
-
-    private fun handleConnectedStatus(): Boolean {
-        return if (packet.sessionId == client.connection.sessionId) {
+        if (client.connectionStatus == ConnectionStatus.ACCEPTED && packet.sessionId == client.connection.sessionId) {
             client.connectionStatus = ConnectionStatus.AUTH_GG
             client.sendPacket(GGAuth(client.connection.sessionId))
-            true
-        } else {
-            false
+            return
         }
-    }
 
-    private fun handleAuthGGStatus(): Boolean {
-        return false
-    }
-
-    private fun handleAuthLoginStatius(): Boolean {
-        return false
+        client.closeConnection()
     }
 }

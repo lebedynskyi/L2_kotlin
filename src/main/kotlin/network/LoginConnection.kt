@@ -60,7 +60,7 @@ class LoginConnection(
         // Required to write into socket
         tempPacketBuffer.flip()
         socketChannel.write(tempPacketBuffer)
-        printDebug("Sent packet ->${tempPacketBuffer.toHexString()}")
+        printDebug("Sent packet ->${tempPacketBuffer.toHexString().substring(0, tempPacketBuffer.position())}")
     }
 
     fun readPacket(): ClientPacket? {
@@ -70,6 +70,9 @@ class LoginConnection(
     }
 
     fun closeConnection(reason: ServerPacket? = null) {
+        reason?.let {
+            sendPacket(it)
+        }
         socketChannel.close()
     }
 }

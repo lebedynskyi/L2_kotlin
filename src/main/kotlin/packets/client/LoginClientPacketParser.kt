@@ -13,6 +13,9 @@ class LoginClientPacketParser(
 
     fun parsePacket(buffer: ByteBuffer): ClientPacket? {
         buffer.flip()
+        if(buffer.position() >= buffer.limit()) {
+            return null
+        }
         val header = buffer.short
         val dataSize = header - DATA_HEADER_SIZE
         loginCrypt.decrypt(buffer.array(), buffer.position(), dataSize)
@@ -28,6 +31,8 @@ class LoginClientPacketParser(
         val packet = when (val opCode = buffer.get().toInt()) {
             0x07 -> RequestGGAuth()
             0x00 -> RequestAuthLogin()
+            0x05 -> RequestServerList()
+            0x02 -> RequestServerLogin()
             else -> {
                 printDebug("Unknown packet with opcode $opCode")
                 null
