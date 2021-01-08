@@ -1,0 +1,14 @@
+debug: true
+
+loginServer:
+  serverIp: "*"
+  serverPort: 2106
+
+gameServer:
+  serverIp: "*"
+  serverPort: 3300
+
+databaseAddress:
+  dbIp: ""
+  dbUserName: ""
+  dbPassword: ""

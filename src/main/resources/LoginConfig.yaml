@@ -1,7 +1,0 @@
-debug: true
-
-network:
-  loginServerIp: "*"
-  loginServerPort: 2106
-  gameServerIp: "*"
-  gameServerPort: 3300

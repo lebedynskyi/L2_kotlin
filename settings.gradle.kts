@@ -1,3 +1,3 @@
+rootProject.name = "L2_Kotlin"
 
-rootProject.name = "L2_Kotlin_login"
-
+include("Core", "Game", "Login")
