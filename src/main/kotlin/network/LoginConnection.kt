@@ -19,7 +19,7 @@ class LoginConnection(
         private val socketChannel: SocketChannel,
         private val selectionKey: SelectionKey,
         private val remoteAddress: InetSocketAddress,
-        private val loginCrypt: LoginCrypt
+        val loginCrypt: LoginCrypt
 ) {
     private val DEFAULT_ORDER = ByteOrder.LITTLE_ENDIAN
     private val READ_BUFFER_SIZE = 64 * 1024

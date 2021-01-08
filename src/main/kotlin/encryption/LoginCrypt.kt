@@ -31,7 +31,7 @@ val STATIC_BLOW_FISH_KEY = ByteArray(16) {
 
 class LoginCrypt(
     val blowFishKey: ByteArray,
-    private val rsaPair: KeyPair
+    val rsaPair: KeyPair
 ) {
     val staticCrypt = CryptEngine(STATIC_BLOW_FISH_KEY)
     val generalCrypt = CryptEngine(blowFishKey)
