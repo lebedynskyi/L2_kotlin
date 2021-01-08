@@ -1,6 +1,10 @@
 import config.NetworkConfig
 import encryption.CryptUtil
 import encryption.LoginCrypt
+import network.LoginClient
+import network.LoginConnection
+import packets.PacketExecutor
+import packets.PacketHandler
 import util.printDebug
 import java.net.InetSocketAddress
 import java.nio.channels.SelectionKey
@@ -13,7 +17,7 @@ class LoginServer(
     private val networkConfig: NetworkConfig
 ) {
     private val connectionSelector: Selector = Selector.open()
-    private val packetHandler = PacketHandler()
+    private val packetHandler = PacketHandler(PacketExecutor(2))
 
     private lateinit var clientsAddress: InetSocketAddress
     private lateinit var blowFishKeys: Array<ByteArray>
@@ -76,7 +80,7 @@ class LoginServer(
 
         val client = LoginClient(
             LoginConnection(
-                Random.nextInt(Int.MAX_VALUE), clientSocket, clientAddress, LoginCrypt(
+                Random.nextInt(Int.MAX_VALUE), clientSocket, clientKey, clientAddress, LoginCrypt(
                     blowFishKeys.random(),
                     rsaPirs.random()
                 )
@@ -89,9 +93,8 @@ class LoginServer(
         printDebug("Read packet")
         val client = key.attachment() as LoginClient
         val packet = client.readPacket()
-        if (packet != null && packetHandler.handle(client, packet)) {
-            key.interestOps(key.interestOps() or SelectionKey.OP_READ)
-        }else {
+        if (packet == null || !packetHandler.handle(client, packet)) {
+            printDebug("Packet or handler is null. Close connection")
             closeConnection(client)
         }
     }

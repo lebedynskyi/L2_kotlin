@@ -1,9 +1,11 @@
+package network
+
 import packets.ClientPacket
 import packets.ServerPacket
 
 class LoginClient(
-        val connection: LoginConnection,
-        var connectionStatus: ConnectionStatus = ConnectionStatus.ACCEPTED
+    val connection: LoginConnection,
+    var connectionStatus: ConnectionStatus = ConnectionStatus.ACCEPTED
 ) {
     init {
         connection.sendInitPacket()

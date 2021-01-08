@@ -1,6 +1,8 @@
+package network
+
 import encryption.LoginCrypt
 import packets.ClientPacket
-import packets.PACKET_DATA_HEADER_SIZE
+import packets.DATA_HEADER_SIZE
 import packets.ServerPacket
 import packets.client.LoginClientPacketParser
 import packets.server.Init
@@ -9,11 +11,13 @@ import util.toHexString
 import java.net.InetSocketAddress
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
+import java.nio.channels.SelectionKey
 import java.nio.channels.SocketChannel
 
 class LoginConnection(
         val sessionId: Int,
         private val socketChannel: SocketChannel,
+        private val selectionKey: SelectionKey,
         private val remoteAddress: InetSocketAddress,
         private val loginCrypt: LoginCrypt
 ) {
@@ -35,7 +39,7 @@ class LoginConnection(
         tempPacketBuffer.clear()
 
         // reserve space for the size
-        tempPacketBuffer.position(PACKET_DATA_HEADER_SIZE)
+        tempPacketBuffer.position(DATA_HEADER_SIZE)
 
         //Write packet to buffer
         val dataStartPosition = tempPacketBuffer.position()
@@ -47,7 +51,7 @@ class LoginConnection(
 
         // Write final size to reserved header
         tempPacketBuffer.position(0)
-        tempPacketBuffer.putShort((encryptedSize + PACKET_DATA_HEADER_SIZE).toShort())
+        tempPacketBuffer.putShort((encryptedSize + DATA_HEADER_SIZE).toShort())
 
         // Set position to end of packet
 

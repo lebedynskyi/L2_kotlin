@@ -3,7 +3,7 @@ package packets.client
 import encryption.CryptUtil
 import encryption.LoginCrypt
 import packets.ClientPacket
-import packets.PACKET_DATA_HEADER_SIZE
+import packets.DATA_HEADER_SIZE
 import util.printDebug
 import java.nio.ByteBuffer
 
@@ -11,7 +11,7 @@ class LoginClientPacketParser(val loginCrypt: LoginCrypt) {
     fun parsePacket(buffer: ByteBuffer): ClientPacket? {
         buffer.flip()
         val header = buffer.short
-        val dataSize = header - PACKET_DATA_HEADER_SIZE
+        val dataSize = header - DATA_HEADER_SIZE
         loginCrypt.decrypt(buffer.array(), buffer.position(), dataSize)
         val valid = CryptUtil.verifyChecksum(buffer.array(), buffer.position(), dataSize)
 
@@ -25,6 +25,7 @@ class LoginClientPacketParser(val loginCrypt: LoginCrypt) {
         val opcode = buffer.get().toInt()
         val packet = when (opcode) {
             0x07 -> RequestGGAuth()
+            0x00 -> RequestAuthLogin()
             else -> {
                 printDebug("Unknown packet with opcode $opcode")
                 null

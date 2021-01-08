@@ -12,7 +12,7 @@ string – Text(UTF8).Each letter is 2 bytes, 1st - the code of letter, 2nd –
 number of code table. The end of line is 0 symbol
  */
 
-const val PACKET_DATA_HEADER_SIZE = 2
+const val DATA_HEADER_SIZE = 2
 
 abstract class ServerPacket {
     private var buffer: ByteBuffer? = null
@@ -98,4 +98,8 @@ abstract class ClientPacket {
 //        }
 //        return _sbuf.toString()
 //    }
+
+    override fun toString(): String {
+        return javaClass.name
+    }
 }
