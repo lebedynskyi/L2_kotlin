@@ -8,14 +8,7 @@ class PacketExecutor(
     threadNumber: Int,
 ) : Executor {
 
-    val executor = Executors.newFixedThreadPool(threadNumber, object : ThreadFactory {
-        val threadCount = 0
-        override fun newThread(r: Runnable): Thread {
-            return Thread().apply {
-                name = "Packet thread ${threadCount.inc()}"
-            }
-        }
-    })
+    val executor = Executors.newFixedThreadPool(threadNumber)
 
     override fun execute(command: Runnable) {
         executor.execute(command)

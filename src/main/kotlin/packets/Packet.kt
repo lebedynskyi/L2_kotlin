@@ -18,8 +18,11 @@ abstract class ServerPacket {
     private var buffer: ByteBuffer? = null
 
     abstract fun write()
+
     fun writeInto(buf: ByteBuffer) {
         buffer = buf
+        write()
+        buffer = null
     }
 
     protected fun writeC(data: Int) {
@@ -42,7 +45,7 @@ abstract class ServerPacket {
         buffer?.putLong(value)
     }
 
-    protected fun writeB(data: ByteArray?) {
+    protected fun writeB(data: ByteArray) {
         buffer?.put(data)
     }
 

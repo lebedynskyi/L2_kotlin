@@ -1,7 +1,6 @@
 package packets.server
 
 import packets.ServerPacket
-import java.nio.ByteBuffer
 
 class Init(
         val sessionId: Int,
