@@ -1,6 +1,6 @@
-package com.vetalll.login.util
+package com.vetalll.core.util
 
-import com.vetalll.login.IS_DEBUG
+import com.vetalll.core.config.IS_DEBUG
 import java.nio.ByteBuffer
 
 fun printSection(section: String) {
@@ -12,8 +12,8 @@ fun printSection(section: String) {
     println(sb.toString())
 }
 
-fun printDebug(message: String) {
-    if (IS_DEBUG) println("com.vetalll.login.core.LoginServer: $message")
+fun printDebug(tag: String, message: String) {
+    if (IS_DEBUG) println("$tag: $message")
 }
 
 fun append(sb: java.lang.StringBuilder, vararg content: Any?) {

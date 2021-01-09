@@ -1,4 +1,4 @@
-package com.vetalll.core
+package com.vetalll.core.config
 
 import com.sksamuel.hoplite.ConfigLoader
 import com.sksamuel.hoplite.PropertySource

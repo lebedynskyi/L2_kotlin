@@ -1,8 +1,9 @@
 package com.vetalll.login.packets.client
 
-import com.vetalll.login.packets.ClientPacket
+import com.vetalll.core.network.ReadablePacket
 
-class RequestAuthLogin : ClientPacket() {
+
+class RequestAuthLogin : ReadablePacket() {
     val raw = ByteArray(128)
     override fun read() {
         readB(raw)

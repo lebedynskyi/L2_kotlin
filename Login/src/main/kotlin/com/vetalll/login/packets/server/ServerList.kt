@@ -1,12 +1,12 @@
 package com.vetalll.login.packets.server
 
+import com.vetalll.core.network.WriteablePacket
 import com.vetalll.login.model.ServerInfo
-import com.vetalll.login.packets.ServerPacket
 import java.net.InetAddress
 
 class ServerList(
     private val servers: List<ServerInfo>
-) : ServerPacket() {
+) : WriteablePacket() {
     override fun write() {
         writeC(0x04)
         writeC(servers.size)

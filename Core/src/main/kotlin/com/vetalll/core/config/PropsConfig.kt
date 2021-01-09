@@ -1,4 +1,4 @@
-package com.vetalll.login.util.configreader
+package com.vetalll.core.config
 
 import java.net.URL
 

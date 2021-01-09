@@ -3,7 +3,7 @@ package com.vetalll.login.packets.handle
 import com.vetalll.login.model.AccountInfo
 import com.vetalll.login.model.SessionKey
 import com.vetalll.login.network.ConnectionStatus
-import com.vetalll.login.network.LoginClient
+import com.vetalll.login.network.LoginClientNew
 import com.vetalll.login.packets.BaseHandler
 import com.vetalll.login.packets.client.LoginFail
 import com.vetalll.login.packets.client.LoginOk
@@ -13,7 +13,7 @@ import kotlin.random.Random
 
 class HandleRequestAuthLogin(
     private val packet: RequestAuthLogin,
-    private val client: LoginClient,
+    private val client: LoginClientNew,
     private val showLicense: Boolean = true
 ) : BaseHandler() {
 
@@ -24,7 +24,7 @@ class HandleRequestAuthLogin(
         }
 
         val rsaCipher = Cipher.getInstance("RSA/ECB/nopadding")
-        rsaCipher.init(Cipher.DECRYPT_MODE, client.connection.loginCrypt.rsaPair.private)
+        rsaCipher.init(Cipher.DECRYPT_MODE, client.crypt.rsaPair.private)
         val decrypted = rsaCipher.doFinal(packet.raw, 0x00, 0x80)
 
         val user = String(decrypted, 0x5E, 14).trim { it <= ' ' }.toLowerCase()

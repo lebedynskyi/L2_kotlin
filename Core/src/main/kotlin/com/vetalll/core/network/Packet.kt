@@ -1,4 +1,4 @@
-package com.vetalll.login.packets
+package com.vetalll.core.network
 
 import java.nio.ByteBuffer
 
@@ -14,10 +14,10 @@ number of code table. The end of line is 0 symbol
 
 const val DATA_HEADER_SIZE = 2
 
-abstract class ServerPacket {
+abstract class WriteablePacket {
     private var buffer: ByteBuffer? = null
 
-    abstract fun write()
+    protected abstract fun write()
 
     fun writeInto(buf: ByteBuffer) {
         buffer = buf
@@ -66,7 +66,7 @@ abstract class ServerPacket {
 //    }
 }
 
-abstract class ClientPacket {
+abstract class ReadablePacket {
     private var buffer: ByteBuffer? = null
 
     abstract fun read()

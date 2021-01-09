@@ -1,10 +1,10 @@
 package com.vetalll.login.packets.client
 
-import com.vetalll.login.packets.ServerPacket
+import com.vetalll.core.network.WriteablePacket
 
 class LoginFail(
     private val reason: Int
-) : ServerPacket() {
+) : WriteablePacket() {
     companion object Reason {
         val REASON_SYSTEM_ERROR = LoginFail(0x01)
         val REASON_PASS_WRONG = LoginFail(0x02)

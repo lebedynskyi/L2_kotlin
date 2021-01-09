@@ -1,19 +1,20 @@
 package com.vetalll.login.packets.client
 
 import com.vetalll.core.encryption.CryptUtil
+import com.vetalll.core.network.DATA_HEADER_SIZE
+import com.vetalll.core.network.ReadablePacket
 import com.vetalll.login.core.LoginCrypt
-import com.vetalll.login.packets.ClientPacket
-import com.vetalll.login.packets.DATA_HEADER_SIZE
-import com.vetalll.login.util.printDebug
+import com.vetalll.core.util.printDebug
+import com.vetalll.login.core.LoginServer
 import java.nio.ByteBuffer
 
 class LoginClientPacketParser(
     private val loginCrypt: LoginCrypt
 ) {
 
-    fun parsePacket(buffer: ByteBuffer): ClientPacket? {
+    fun parsePacket(buffer: ByteBuffer): ReadablePacket? {
         buffer.flip()
-        if(buffer.position() >= buffer.limit()) {
+        if (buffer.position() >= buffer.limit()) {
             return null
         }
         val header = buffer.short
@@ -27,14 +28,14 @@ class LoginClientPacketParser(
     }
 
 
-    private fun parsePacketByOpCode(buffer: ByteBuffer): ClientPacket? {
+    private fun parsePacketByOpCode(buffer: ByteBuffer): ReadablePacket? {
         val packet = when (val opCode = buffer.get().toInt()) {
             0x07 -> RequestGGAuth()
             0x00 -> RequestAuthLogin()
             0x05 -> RequestServerList()
             0x02 -> RequestServerLogin()
             else -> {
-                printDebug("Unknown packet with opcode $opCode")
+                printDebug(LoginServer, "Unknown packet with opcode $opCode")
                 null
             }
         }

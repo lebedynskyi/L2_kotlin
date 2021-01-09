@@ -1,12 +1,13 @@
 package com.vetalll.login.packets.server
 
-import com.vetalll.login.packets.ServerPacket
+import com.vetalll.core.network.WriteablePacket
+
 
 class Init(
         val sessionId: Int,
         val publicKey: ByteArray,
         val blowFishKey: ByteArray
-) : ServerPacket() {
+) : WriteablePacket() {
 
     override fun write() {
         // init packet id

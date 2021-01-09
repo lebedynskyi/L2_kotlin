@@ -1,4 +1,4 @@
-package core
+package com.vetalll.core.config
 
 data class NetworkConfig(
     val serverIp: String,

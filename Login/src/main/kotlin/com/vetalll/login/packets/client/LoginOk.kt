@@ -1,11 +1,11 @@
 package com.vetalll.login.packets.client
 
-import com.vetalll.login.packets.ServerPacket
+import com.vetalll.core.network.WriteablePacket
 
 class LoginOk(
     val loginOk1: Int,
     val loginOk2: Int
-) : ServerPacket() {
+) : WriteablePacket() {
     override fun write() {
         writeC(0x03)
         writeD(loginOk1)

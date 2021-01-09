@@ -1,7 +1,9 @@
 package com.vetalll.login.core
 
-import core.DBConfig
-import core.NetworkConfig
+import com.vetalll.core.config.DBConfig
+import com.vetalll.core.config.NetworkConfig
+
+const val LoginServer = "LoginServer"
 
 data class LoginConfig(
     val debug: Boolean,

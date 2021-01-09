@@ -1,8 +1,8 @@
 package com.vetalll.login.packets.client
 
-import com.vetalll.login.packets.ClientPacket
+import com.vetalll.core.network.ReadablePacket
 
-class RequestGGAuth : ClientPacket() {
+class RequestGGAuth : ReadablePacket() {
     var sessionId: Int = -1
     var _data1: Int = -1
     var _data2: Int = -1

@@ -1,5 +1,6 @@
 package com.vetalll.login.core
 
+import com.vetalll.core.encryption.ClientCrypt
 import com.vetalll.core.encryption.CryptEngine
 import com.vetalll.core.encryption.CryptUtil
 import java.math.BigInteger
@@ -33,18 +34,19 @@ val STATIC_BLOW_FISH_KEY = ByteArray(16) {
 class LoginCrypt(
     val blowFishKey: ByteArray,
     val rsaPair: KeyPair
-) {
-    val staticCrypt = CryptEngine(STATIC_BLOW_FISH_KEY)
-    val generalCrypt = CryptEngine(blowFishKey)
+) : ClientCrypt() {
+
+    private val staticCrypt = CryptEngine(STATIC_BLOW_FISH_KEY)
+    private val generalCrypt = CryptEngine(blowFishKey)
     val scrambleModules = scrambleModulus((rsaPair.public as RSAPublicKey).modulus)
 
     private var isStatic = AtomicBoolean(true)
 
     // This is side effect function. Original array inside buffer will be modified
-    fun encrypt(raw: ByteArray, offset: Int, originalSize: Int): Int {
+    override fun encrypt(raw: ByteArray, offset: Int, originalSize: Int): ByteArray {
         // Reserve for checksum
         var newSize = originalSize + 4
-        if (isStatic.getAndSet(false)) {
+        return if (isStatic.getAndSet(false)) {
             // Reserve for XOR key in the end
             newSize += 4
 
@@ -59,12 +61,10 @@ class LoginCrypt(
             CryptUtil.appendChecksum(raw, offset, newSize)
             generalCrypt.encrypt(raw, offset, newSize)
         }
-
-        return newSize
     }
 
-    fun decrypt(raw: ByteArray, offset: Int, originalSize: Int) {
-        generalCrypt.decrypt(raw, offset, originalSize)
+    override fun decrypt(raw: ByteArray, offset: Int, originalSize: Int): ByteArray {
+        return generalCrypt.decrypt(raw, offset, originalSize)
     }
 
     private fun scrambleModulus(modulus: BigInteger): ByteArray {
@@ -83,9 +83,11 @@ class LoginCrypt(
         // step 2 : xor first 0x40 bytes with last 0x40 bytes
         for (i in 0..0x3f) scrambledMod[i] = (scrambledMod[i].toInt() xor scrambledMod[0x40 + i].toInt()).toByte()
         // step 3 : xor bytes 0x0d-0x10 with bytes 0x34-0x38
-        for (i in 0..3) scrambledMod[0x0d + i] = (scrambledMod[0x0d + i].toInt() xor scrambledMod[0x34 + i].toInt()).toByte()
+        for (i in 0..3) scrambledMod[0x0d + i] =
+            (scrambledMod[0x0d + i].toInt() xor scrambledMod[0x34 + i].toInt()).toByte()
         // step 4 : xor last 0x40 bytes with first 0x40 bytes
-        for (i in 0..0x3f) scrambledMod[0x40 + i] = (scrambledMod[0x40 + i].toInt() xor scrambledMod[i].toInt()).toByte()
+        for (i in 0..0x3f) scrambledMod[0x40 + i] =
+            (scrambledMod[0x40 + i].toInt() xor scrambledMod[i].toInt()).toByte()
         return scrambledMod
     }
 }

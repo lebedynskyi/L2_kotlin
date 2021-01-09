@@ -1,6 +1,7 @@
 package com.vetalll.login.packets
 
-import com.vetalll.login.network.LoginClient
+import com.vetalll.core.network.ReadablePacket
+import com.vetalll.login.network.LoginClientNew
 import com.vetalll.login.packets.client.RequestAuthLogin
 import com.vetalll.login.packets.client.RequestGGAuth
 import com.vetalll.login.packets.client.RequestServerList
@@ -15,7 +16,7 @@ abstract class BaseHandler : Runnable
 class PacketHandler(
     private val packetExecutor: PacketExecutor
 ) {
-    fun handle(client: LoginClient, packet: ClientPacket): Boolean {
+    fun handle(client: LoginClientNew, packet: ReadablePacket): Boolean {
         val handler = when (packet) {
             is RequestGGAuth -> HandleRequestGGAuth(packet, client)
             is RequestAuthLogin -> HandleRequestAuthLogin(packet, client)
