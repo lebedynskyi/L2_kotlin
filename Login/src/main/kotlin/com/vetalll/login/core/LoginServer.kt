@@ -4,7 +4,7 @@ package com.vetalll.login.core
 //import com.vetalll.core.config.NetworkConfig
 //import com.vetalll.login.network.LoginClient
 //import com.vetalll.login.network.LoginConnection
-//import com.vetalll.login.packets.PacketExecutor
+//import com.vetalll.core.network.PacketExecutor
 //import com.vetalll.login.packets.PacketHandler
 //import com.vetalll.core.util.printDebug
 //import java.net.InetSocketAddress

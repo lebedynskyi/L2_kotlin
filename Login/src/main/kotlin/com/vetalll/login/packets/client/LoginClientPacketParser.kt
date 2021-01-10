@@ -13,14 +13,13 @@ class LoginClientPacketParser(
 ) {
 
     fun parsePacket(buffer: ByteBuffer): ReadablePacket? {
-        buffer.flip()
         if (buffer.position() >= buffer.limit()) {
             return null
         }
         val header = buffer.short
         val dataSize = header - DATA_HEADER_SIZE
-        loginCrypt.decrypt(buffer.array(), buffer.position(), dataSize)
-        val valid = CryptUtil.verifyChecksum(buffer.array(), buffer.position(), dataSize)
+        val decryptedSize = loginCrypt.decrypt(buffer.array(), buffer.position(), dataSize)
+        val valid = CryptUtil.verifyChecksum(buffer.array(), buffer.position(), decryptedSize)
 
         return if (valid) {
             parsePacketByOpCode(buffer)

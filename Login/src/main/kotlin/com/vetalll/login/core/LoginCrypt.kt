@@ -43,7 +43,7 @@ class LoginCrypt(
     private var isStatic = AtomicBoolean(true)
 
     // This is side effect function. Original array inside buffer will be modified
-    override fun encrypt(raw: ByteArray, offset: Int, originalSize: Int): ByteArray {
+    override fun encrypt(raw: ByteArray, offset: Int, originalSize: Int): Int {
         // Reserve for checksum
         var newSize = originalSize + 4
         return if (isStatic.getAndSet(false)) {
@@ -63,7 +63,7 @@ class LoginCrypt(
         }
     }
 
-    override fun decrypt(raw: ByteArray, offset: Int, originalSize: Int): ByteArray {
+    override fun decrypt(raw: ByteArray, offset: Int, originalSize: Int): Int {
         return generalCrypt.decrypt(raw, offset, originalSize)
     }
 

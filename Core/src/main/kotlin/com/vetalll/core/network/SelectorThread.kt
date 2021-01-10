@@ -9,18 +9,20 @@ import java.nio.ByteOrder
 import java.nio.channels.SelectionKey
 import java.nio.channels.Selector
 import java.nio.channels.ServerSocketChannel
+import java.nio.channels.SocketChannel
 
 private val DEFAULT_BYTE_ORDER = ByteOrder.LITTLE_ENDIAN
 private val READ_BUFFER_SIZE = 64 * 1024
 private val WRITE_BUFFER_SIZE = 64 * 1024
 
 /**
- * TODO implement packet counter and limit
+ * TODO implement packet counter and limit per selection. Also need to introduce cache of packet that were not sent
  */
 
 class SelectorThread(
     private val networkConfig: NetworkConfig,
     private val clientFactory: ClientFactory,
+    private val packetExecutor: PacketExecutor<Client<*, *>>,
     private val serverName: String = "Unknown server"
 ) : Thread() {
     @Volatile
@@ -40,7 +42,7 @@ class SelectorThread(
             checkSelectedKeys(socketChannel)
         }
 
-        printDebug(Core, "Shutdown $serverName" )
+        printDebug(Core, "Shutdown $serverName")
         socketChannel.close()
     }
 
@@ -55,31 +57,45 @@ class SelectorThread(
             configureBlocking(false)
             register(selector, SelectionKey.OP_ACCEPT)
             bind(serverAddress)
-            printDebug(Core, "$serverName is listening at ${serverAddress.hostName}:${serverAddress.port}" )
+            printDebug(Core, "$serverName is listening at ${serverAddress.hostName}:${serverAddress.port}")
         }
     }
 
     private fun checkSelectedKeys(socketChannel: ServerSocketChannel) {
-        if (selector.select() == 0) {
+        if (selector.selectNow() == 0) {
             return
         }
 
         val keys: Set<*> = selector.selectedKeys()
         keys.forEach {
             val key = it as SelectionKey
-            when {
-                key.isAcceptable -> acceptConnection(socketChannel)
-                key.isWritable && key.isReadable -> {
+            when (key.readyOps()) {
+                SelectionKey.OP_CONNECT -> finishConnection(key)
+                SelectionKey.OP_ACCEPT -> acceptConnection(socketChannel)
+                SelectionKey.OP_READ -> readPackets(key)
+                SelectionKey.OP_WRITE -> writePackets(key)
+                SelectionKey.OP_READ or SelectionKey.OP_WRITE -> {
                     writePackets(key)
                     readPackets(key)
                 }
-                key.isReadable -> readPackets(key)
-                key.isWritable -> writePackets(key)
                 else -> printDebug(Core, "Unknown state of key")
             }
         }
 
         selector.selectedKeys().clear()
+    }
+
+    private fun finishConnection(key: SelectionKey) {
+        val client = key.attachment() as Client<*, *>
+        (key.channel() as SocketChannel).finishConnect()
+
+        // key might have been invalidated on finishConnect()
+
+        // key might have been invalidated on finishConnect()
+        if (key.isValid) {
+            key.interestOps(key.interestOps() or SelectionKey.OP_READ)
+            key.interestOps(key.interestOps() and SelectionKey.OP_CONNECT.inv())
+        }
     }
 
     private fun acceptConnection(socketChannel: ServerSocketChannel) {
@@ -95,8 +111,22 @@ class SelectorThread(
     }
 
     private fun readPackets(key: SelectionKey) {
+        readBuffer.clear()
         val client = key.attachment() as Client<*, *>
-        printDebug(Core, "Ready to read")
+        val readResult = client.connection.read(readBuffer)
+        if (readResult <= 0) {
+            handleErrorOfReading(readResult, key, client)
+            return
+        }
+
+        readBuffer.flip()
+        val packet = client.parsePacket(readBuffer)
+        if (packet != null) {
+            packetExecutor.handle(client, packet)
+            printDebug(Core, "Read packet")
+        } else {
+            TODO("Packet null, close connection")
+        }
     }
 
     private fun writePackets(key: SelectionKey) {
@@ -113,14 +143,17 @@ class SelectorThread(
 
             // Required to write into socket
             tempWriteBuffer.flip()
-            client.connection.write(tempWriteBuffer)
+            writeBuffer.put(tempWriteBuffer)
         }
+        writeBuffer.flip()
+        client.connection.write(writeBuffer)
+        key.interestOps(key.interestOps() and SelectionKey.OP_WRITE.inv())
         printDebug(Core, "Sent $packetCounter packets to ${client.connection.clientAddress}")
     }
 
     private fun writePacketToBuffer(packet: WriteablePacket, buffer: ByteBuffer, client: Client<*, *>) {
         // reserve space for the size
-        buffer.position(DATA_HEADER_SIZE)
+        buffer.position(buffer.position() + DATA_HEADER_SIZE)
 
         //Write packet to buffer
         val dataStartPosition = buffer.position()
@@ -128,14 +161,23 @@ class SelectorThread(
         val dataSize = buffer.position() - dataStartPosition
 
         // Encrypt data exclusive header (reserved space for size of whole packet)
-        val encrypted = client.encrypt(buffer.array(), dataStartPosition, dataSize)
-        buffer.put(encrypted)
+        val encryptedSize = client.encrypt(buffer.array(), dataStartPosition, dataSize)
+//        buffer.position(dataStartPosition)
+//        buffer.put(encrypted)
 
         // Write final size to reserved header
-        buffer.position(0)
-        buffer.putShort((encrypted.size + DATA_HEADER_SIZE).toShort())
+        buffer.position(dataStartPosition - DATA_HEADER_SIZE)
+        buffer.putShort((encryptedSize + DATA_HEADER_SIZE).toShort())
 
         // Set position to end of packet
-        buffer.position(dataStartPosition + encrypted.size)
+        buffer.position(dataStartPosition + encryptedSize)
+    }
+
+    private fun handleErrorOfReading(result: Int, key: SelectionKey, client: Client<*, *>) {
+        when (result) {
+            0 -> client.connection.closeConnection()
+            -1 -> client.connection.closeConnection()
+            -2 -> client.connection.closeConnection()
+        }
     }
 }

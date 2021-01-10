@@ -1,12 +1,12 @@
 package com.vetalll.login.packets.handle
 
+import com.vetalll.core.network.BasePacketHandler
 import com.vetalll.login.model.AccountInfo
 import com.vetalll.login.model.SessionKey
 import com.vetalll.login.network.ConnectionStatus
 import com.vetalll.login.network.LoginClientNew
-import com.vetalll.login.packets.BaseHandler
-import com.vetalll.login.packets.client.LoginFail
-import com.vetalll.login.packets.client.LoginOk
+import com.vetalll.login.packets.server.LoginFail
+import com.vetalll.login.packets.server.LoginOk
 import com.vetalll.login.packets.client.RequestAuthLogin
 import javax.crypto.Cipher
 import kotlin.random.Random
@@ -15,7 +15,7 @@ class HandleRequestAuthLogin(
     private val packet: RequestAuthLogin,
     private val client: LoginClientNew,
     private val showLicense: Boolean = true
-) : BaseHandler() {
+) : BasePacketHandler() {
 
     override fun run() {
         if (client.connectionStatus != ConnectionStatus.AUTH_GG) {

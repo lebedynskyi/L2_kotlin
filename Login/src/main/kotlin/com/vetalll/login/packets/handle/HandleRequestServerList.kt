@@ -1,16 +1,16 @@
 package com.vetalll.login.packets.handle
 
+import com.vetalll.core.network.BasePacketHandler
 import com.vetalll.login.model.ServerInfo
 import com.vetalll.login.network.LoginClientNew
-import com.vetalll.login.packets.BaseHandler
-import com.vetalll.login.packets.client.LoginFail
+import com.vetalll.login.packets.server.LoginFail
 import com.vetalll.login.packets.client.RequestServerList
 import com.vetalll.login.packets.server.ServerList
 
 class HandleRequestServerList(
     val packet: RequestServerList,
     val client: LoginClientNew
-) : BaseHandler() {
+) : BasePacketHandler() {
     override fun run() {
         if (client.sessionKey.loginOkID1 != packet.sessionKey1 || client.sessionKey.loginOkID2 != packet.sessionKey2) {
             client.sendPacket(LoginFail.REASON_ACCESS_FAILED)

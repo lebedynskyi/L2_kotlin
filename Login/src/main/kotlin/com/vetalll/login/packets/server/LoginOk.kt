@@ -1,4 +1,4 @@
-package com.vetalll.login.packets.client
+package com.vetalll.login.packets.server
 
 import com.vetalll.core.network.WriteablePacket
 
