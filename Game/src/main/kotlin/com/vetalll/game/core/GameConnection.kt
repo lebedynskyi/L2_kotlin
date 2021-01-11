@@ -1,11 +1,11 @@
-package com.vetalll.login.network
+package com.vetalll.game.core
 
 import com.vetalll.core.network.ClientConnection
 import java.net.InetSocketAddress
 import java.nio.channels.SelectionKey
 import java.nio.channels.SocketChannel
 
-class LoginConnectionNew(
+class GameConnection(
     sessionId: Int,
     clientKey: SelectionKey,
     clientAddress: InetSocketAddress,

@@ -1,0 +1,5 @@
+debug: true
+
+gameServer:
+  serverIp: "*"
+  serverPort: 7777

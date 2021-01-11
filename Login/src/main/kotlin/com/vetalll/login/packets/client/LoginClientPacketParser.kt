@@ -5,7 +5,7 @@ import com.vetalll.core.network.DATA_HEADER_SIZE
 import com.vetalll.core.network.ReadablePacket
 import com.vetalll.login.core.LoginCrypt
 import com.vetalll.core.util.printDebug
-import com.vetalll.login.core.LoginServer
+import com.vetalll.login.core.LoginServerTag
 import java.nio.ByteBuffer
 
 class LoginClientPacketParser(
@@ -34,7 +34,7 @@ class LoginClientPacketParser(
             0x05 -> RequestServerList()
             0x02 -> RequestServerLogin()
             else -> {
-                printDebug(LoginServer, "Unknown packet with opcode $opCode")
+                printDebug(LoginServerTag, "Unknown packet with opcode $opCode")
                 null
             }
         }
