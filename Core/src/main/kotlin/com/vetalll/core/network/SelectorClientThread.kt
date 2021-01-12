@@ -3,6 +3,7 @@ package com.vetalll.core.network
 import com.vetalll.core.config.Core
 import com.vetalll.core.config.NetworkConfig
 import com.vetalll.core.util.printDebug
+import java.lang.IllegalArgumentException
 import java.net.InetSocketAddress
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
@@ -19,7 +20,7 @@ private val WRITE_BUFFER_SIZE = 64 * 1024
  * TODO implement packet counter and limit per selection. Also need to introduce cache of packet that were not sent
  */
 
-open class SelectorThread(
+open class SelectorClientThread(
     private val networkConfig: NetworkConfig,
     private val clientFactory: ClientFactory,
     private val packetExecutor: PacketExecutor<Client<*, *>>,
@@ -47,22 +48,24 @@ open class SelectorThread(
         socketChannel.close()
     }
 
-    private fun openConnection(): ServerSocketChannel {
+    private fun openConnection(): SocketChannel {
         serverAddress = if (networkConfig.serverIp.isBlank() || networkConfig.serverIp == "*") {
-            InetSocketAddress(networkConfig.serverPort)
+            throw IllegalArgumentException("Should be direct IP address")
         } else {
             InetSocketAddress(networkConfig.serverIp, networkConfig.serverPort)
         }
 
-        return ServerSocketChannel.open().apply {
+        return SocketChannel.open().apply {
             configureBlocking(false)
-            register(selector, SelectionKey.OP_ACCEPT)
-            bind(serverAddress)
-            printDebug(Core, "$serverName is listening at ${serverAddress.hostName}:${serverAddress.port}")
+            val clientKey = register(selector, SelectionKey.OP_CONNECT)
+            connect(serverAddress)
+            val client = clientFactory.createClient(clientKey, serverAddress, this)
+            clientKey.attach(client)
+            printDebug(Core, "$serverName Connected to ${serverAddress.hostName}:${serverAddress.port}")
         }
     }
 
-    private fun checkSelectedKeys(socketChannel: ServerSocketChannel) {
+    private fun checkSelectedKeys(socketChannel: SocketChannel) {
         if (selector.selectNow() == 0) {
             return
         }
@@ -72,7 +75,7 @@ open class SelectorThread(
             val key = it as SelectionKey
             when (key.readyOps()) {
                 SelectionKey.OP_CONNECT -> finishConnection(key)
-                SelectionKey.OP_ACCEPT -> acceptConnection(socketChannel)
+//                SelectionKey.OP_ACCEPT -> this.accept(socketChannel)
                 SelectionKey.OP_READ -> readPackets(key)
                 SelectionKey.OP_WRITE -> writePackets(key)
                 SelectionKey.OP_READ or SelectionKey.OP_WRITE -> {
@@ -87,10 +90,9 @@ open class SelectorThread(
     }
 
     private fun finishConnection(key: SelectionKey) {
-        val client = key.attachment() as Client<*, *>
+//        val client = key.attachment() as Client<*, *>
         (key.channel() as SocketChannel).finishConnect()
 
-        printDebug(serverName, "Disconnected client from ${client.connection.clientAddress}")
         // key might have been invalidated on finishConnect()
         if (key.isValid) {
             key.interestOps(key.interestOps() or SelectionKey.OP_READ)
@@ -98,18 +100,18 @@ open class SelectorThread(
         }
     }
 
-    private fun acceptConnection(socketChannel: ServerSocketChannel) {
-        val clientSocket = socketChannel.accept()?.apply {
-            configureBlocking(false)
-        } ?: return
-
-        val clientAddress = clientSocket.remoteAddress as InetSocketAddress
-        val clientKey = clientSocket.register(selector, SelectionKey.OP_READ)
-
-        printDebug(serverName, "Accepted new connection from $clientAddress")
-        val client = clientFactory.createClient(clientKey, clientAddress, clientSocket)
-        clientKey.attach(client)
-    }
+//    private fun accept(socketChannel: SocketChannel) {
+//        val clientSocket = socketChannel.accept()?.apply {
+//            configureBlocking(false)
+//        } ?: return
+//
+//        val clientAddress = clientSocket.remoteAddress as InetSocketAddress
+//        val clientKey = clientSocket.register(selector, SelectionKey.OP_READ)
+//
+//        printDebug(serverName, "Accepted new connection from $clientAddress")
+//        val client = clientFactory.createClient(clientKey, clientAddress, clientSocket)
+//        clientKey.attach(client)
+//    }
 
     private fun readPackets(key: SelectionKey) {
         readBuffer.clear()

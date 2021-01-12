@@ -15,6 +15,6 @@ class HandleAuthLogin(
         client.sessionKey = SessionKey(packet._playKey1, packet._playKey2, packet._loginKey1, packet._loginKey1)
         client.account = AccountInfo(packet._loginName.orEmpty())
         // TODO check login server info about account
-        client.sendPacket(CharSlotList())
+        client.sendPacket(CharSlotList(client, emptyList()))
     }
 }

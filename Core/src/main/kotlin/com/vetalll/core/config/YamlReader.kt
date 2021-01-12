@@ -1,7 +1,6 @@
 package com.vetalll.core.config
 
-import com.sksamuel.hoplite.ConfigLoader
-import com.sksamuel.hoplite.PropertySource
+import com.sksamuel.hoplite.*
 import java.io.InputStream
 
 class YamlReader {

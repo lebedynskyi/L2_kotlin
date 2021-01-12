@@ -8,7 +8,7 @@ fun printSection(section: String) {
     for (i in 0 until (73 - section.length)) sb.append("-")
 
     append(sb, " [ ", section, " ]")
-//    println("com.vetalll.login.core.LoginServer: $section")
+//    println("com.vetalll.login.clients.core.LoginServer: $section")
     println(sb.toString())
 }
 

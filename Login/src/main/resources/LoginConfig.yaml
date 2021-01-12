@@ -4,11 +4,22 @@ loginServer:
   serverIp: "*"
   serverPort: 2106
 
-gameServer:
-  serverIp: "*"
-  serverPort: 3300
-
 databaseAddress:
   dbIp: ""
   dbUserName: ""
   dbPassword: ""
+
+bridgeConfig:
+  blowFishKey: "encryption"
+  bridgeServer:
+    serverIp: "*"
+    serverPort: 3300
+
+  registeredServers:
+    - {
+      id: "main"
+    }
+    - {
+      id: "second"
+    }
+
