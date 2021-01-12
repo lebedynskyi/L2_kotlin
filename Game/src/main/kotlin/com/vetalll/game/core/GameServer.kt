@@ -1,6 +1,7 @@
 package com.vetalll.game.core
 
 import com.vetalll.core.config.NetworkConfig
+import com.vetalll.core.encryption.CryptUtil
 import com.vetalll.core.network.Client
 import com.vetalll.core.network.PacketExecutor
 import com.vetalll.core.network.SelectorThread
@@ -19,7 +20,7 @@ class GameServer(
     fun startListenConnections() {
         selectorThread = SelectorThread(
             networkConfig,
-            GameClientFactory(GameCrypt()),
+            GameClientFactory(GameCrypt(CryptUtil.generateByteArray(16))),
             GamePacketExecutor(Executors.newFixedThreadPool(2)) as PacketExecutor<Client<*, *>>,
             GameServerTag
         )

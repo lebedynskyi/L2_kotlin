@@ -18,8 +18,8 @@ class CryptUtil {
             return keygen.genKeyPair()
         }
 
-        fun generateBlowFishKey(): ByteArray {
-            return secureRandom.generateSeed(16)
+        fun generateByteArray(size: Int): ByteArray {
+            return secureRandom.generateSeed(size)
         }
 
         /**

@@ -8,7 +8,7 @@ import java.nio.channels.SocketChannel
 import kotlin.random.Random
 
 class GameClientFactory(
-    val gameCrypt: GameCrypt
+    private val gameCrypt: GameCrypt
 ) : ClientFactory() {
     override fun createClient(
         clientKey: SelectionKey,

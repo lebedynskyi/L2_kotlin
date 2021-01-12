@@ -2,8 +2,8 @@ package com.vetalll.login.core
 
 import com.vetalll.core.network.Client
 import com.vetalll.core.network.ClientFactory
-import com.vetalll.login.network.LoginClientNew
-import com.vetalll.login.network.LoginConnectionNew
+import com.vetalll.login.network.LoginClient
+import com.vetalll.login.network.LoginConnection
 import java.net.InetSocketAddress
 import java.nio.channels.SelectionKey
 import java.nio.channels.SocketChannel
@@ -22,9 +22,9 @@ class LoginClientFactory(
     ): Client<*, *> {
 
         val crypt = LoginCrypt(blowFishKeys.random(), rsaPairs.random())
-        return LoginClientNew(
+        return LoginClient(
             crypt,
-            LoginConnectionNew(Random.nextInt(Int.MAX_VALUE), clientKey, clientAddress, clientSocket)
+            LoginConnection(Random.nextInt(Int.MAX_VALUE), clientKey, clientAddress, clientSocket)
         )
     }
 }

@@ -34,6 +34,7 @@ class SelectorThread(
     private val tempWriteBuffer = ByteBuffer.wrap(ByteArray(WRITE_BUFFER_SIZE)).order(DEFAULT_BYTE_ORDER)
     private val readBuffer = ByteBuffer.wrap(ByteArray(READ_BUFFER_SIZE)).order(DEFAULT_BYTE_ORDER)
     private val writeBuffer = ByteBuffer.wrap(ByteArray(WRITE_BUFFER_SIZE)).order(DEFAULT_BYTE_ORDER)
+    private val stringBuffer = StringBuffer()
 
     override fun run() {
         val socketChannel = openConnection()
@@ -78,7 +79,7 @@ class SelectorThread(
                     writePackets(key)
                     readPackets(key)
                 }
-                else -> printDebug(Core, "Unknown state of key")
+                else -> printDebug(serverName, "Unknown state of key")
             }
         }
 
@@ -89,8 +90,7 @@ class SelectorThread(
         val client = key.attachment() as Client<*, *>
         (key.channel() as SocketChannel).finishConnect()
 
-        // key might have been invalidated on finishConnect()
-
+        printDebug(serverName, "Disconnected client from ${client.connection.clientAddress}")
         // key might have been invalidated on finishConnect()
         if (key.isValid) {
             key.interestOps(key.interestOps() or SelectionKey.OP_READ)
@@ -106,12 +106,16 @@ class SelectorThread(
         val clientAddress = clientSocket.remoteAddress as InetSocketAddress
         val clientKey = clientSocket.register(selector, SelectionKey.OP_READ)
 
+        printDebug(serverName, "Accepted new connection from $clientAddress")
         val client = clientFactory.createClient(clientKey, clientAddress, clientSocket)
         clientKey.attach(client)
     }
 
     private fun readPackets(key: SelectionKey) {
         readBuffer.clear()
+        if (!key.isValid) {
+            printDebug(serverName, "Key is invalid")
+        }
         val client = key.attachment() as Client<*, *>
         val readResult = client.connection.read(readBuffer)
         if (readResult <= 0) {
@@ -120,10 +124,10 @@ class SelectorThread(
         }
 
         readBuffer.flip()
-        val packet = client.parsePacket(readBuffer)
+        val packet = client.parsePacket(readBuffer, stringBuffer)
         if (packet != null) {
             packetExecutor.handle(client, packet)
-            printDebug(Core, "Read packet")
+            printDebug(serverName, "Read packet")
         } else {
             TODO("Packet null, close connection")
         }
@@ -148,7 +152,7 @@ class SelectorThread(
         writeBuffer.flip()
         client.connection.write(writeBuffer)
         key.interestOps(key.interestOps() and SelectionKey.OP_WRITE.inv())
-        printDebug(Core, "Sent $packetCounter packets to ${client.connection.clientAddress}")
+        printDebug(serverName, "Sent $packetCounter packets to ${client.connection.clientAddress}")
     }
 
     private fun writePacketToBuffer(packet: WriteablePacket, buffer: ByteBuffer, client: Client<*, *>) {

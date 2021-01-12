@@ -1,4 +1,4 @@
-package com.vetalll.login.model
+package com.vetalll.core
 
 data class SessionKey(
     var playOkID1: Int,

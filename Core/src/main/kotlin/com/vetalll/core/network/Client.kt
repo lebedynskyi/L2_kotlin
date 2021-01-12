@@ -1,5 +1,7 @@
 package com.vetalll.core.network
 
+import com.vetalll.core.AccountInfo
+import com.vetalll.core.SessionKey
 import com.vetalll.core.encryption.ClientCrypt
 import java.net.InetSocketAddress
 import java.nio.ByteBuffer
@@ -11,6 +13,9 @@ abstract class Client<Crypt : ClientCrypt, Connection : ClientConnection>(
     val crypt: Crypt,
     val connection: Connection,
 ) {
+    lateinit var sessionKey: SessionKey
+    lateinit var account: AccountInfo
+
     val packetQueue = ConcurrentLinkedQueue<WriteablePacket>()
 
     fun encrypt(data: ByteArray, offset: Int, size: Int): Int {
@@ -26,7 +31,7 @@ abstract class Client<Crypt : ClientCrypt, Connection : ClientConnection>(
         connection.clientKey.interestOps(connection.clientKey.interestOps() or SelectionKey.OP_WRITE)
     }
 
-    abstract fun parsePacket(readBuffer: ByteBuffer): ReadablePacket?
+    abstract fun parsePacket(readBuffer: ByteBuffer, stringBuffer: StringBuffer): ReadablePacket?
 }
 
 abstract class ClientFactory {

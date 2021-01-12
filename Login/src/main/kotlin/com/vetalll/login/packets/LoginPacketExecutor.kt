@@ -2,7 +2,7 @@ package com.vetalll.login.packets
 
 import com.vetalll.core.network.PacketExecutor
 import com.vetalll.core.network.ReadablePacket
-import com.vetalll.login.network.LoginClientNew
+import com.vetalll.login.network.LoginClient
 import com.vetalll.login.packets.client.RequestAuthLogin
 import com.vetalll.login.packets.client.RequestGGAuth
 import com.vetalll.login.packets.client.RequestServerList
@@ -15,8 +15,8 @@ import java.util.concurrent.ExecutorService
 
 class LoginPacketExecutor(
     packetExecutor: ExecutorService
-) : PacketExecutor<LoginClientNew>(packetExecutor) {
-    override fun handle(client: LoginClientNew, packet: ReadablePacket): Boolean {
+) : PacketExecutor<LoginClient>(packetExecutor) {
+    override fun handle(client: LoginClient, packet: ReadablePacket): Boolean {
         val handler = when (packet) {
             is RequestGGAuth -> HandleRequestGGAuth(packet, client)
             is RequestAuthLogin -> HandleRequestAuthLogin(packet, client)

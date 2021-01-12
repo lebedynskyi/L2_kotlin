@@ -1,6 +1,6 @@
 package com.vetalll.core.encryption
 
-class CryptEngine(
+class BlowFishCrypt(
     val key: ByteArray
 ) {
     val encryption = BlowfishEngine().apply { init(true, key) }

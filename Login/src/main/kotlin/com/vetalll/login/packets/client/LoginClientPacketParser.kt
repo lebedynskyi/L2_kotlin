@@ -39,7 +39,7 @@ class LoginClientPacketParser(
             }
         }
         return packet?.also {
-            it.readFrom(buffer)
+            it.readFrom(buffer, null)
         }
     }
 }

@@ -5,7 +5,7 @@ import com.vetalll.core.config.YamlReader
 import com.vetalll.core.util.printDebug
 import com.vetalll.login.core.LoginConfig
 import com.vetalll.core.util.printSection
-import com.vetalll.login.core.LoginServerNew
+import com.vetalll.login.core.LoginServer
 import java.io.FileInputStream
 
 const val LoginConfigResource = "/LoginConfig.yaml"
@@ -17,7 +17,7 @@ fun main(args: Array<String>) {
     printDebug(Main, "Config read successfully")
 
     IS_DEBUG = config.debug
-    val server = LoginServerNew(config.loginServer)
+    val server = LoginServer(config.loginServer)
     server.loadServerData()
     server.startListenConnections()
 }

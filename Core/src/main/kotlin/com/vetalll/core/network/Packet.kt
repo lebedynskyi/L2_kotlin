@@ -68,13 +68,16 @@ abstract class WriteablePacket {
 
 abstract class ReadablePacket {
     private var buffer: ByteBuffer? = null
+    private var sBuffer: StringBuffer? = null
 
     abstract fun read()
 
-    fun readFrom(buf: ByteBuffer) {
+    fun readFrom(buf: ByteBuffer, tempStringBuff: StringBuffer?) {
         buffer = buf
+        sBuffer = tempStringBuff
         read()
         buffer = null
+        sBuffer = null
     }
 
     protected fun readB(dst: ByteArray?) {
@@ -93,14 +96,20 @@ abstract class ReadablePacket {
         return buffer!!.int
     }
 
-//    protected fun readS(): String {
-//        _sbuf.clear()
-//        var ch: Char
-//        while (buffer?.getChar().also { ch = it }.toInt() != 0) {
-//            _sbuf.append(ch)
-//        }
-//        return _sbuf.toString()
-//    }
+    protected fun readS(): String {
+        sBuffer?.delete(0, sBuffer?.length ?: 0)
+
+        while (true) {
+            val ch = buffer?.char
+            if (ch != null && ch.toByte() != 0.toByte()) {
+                sBuffer?.append(ch)
+            } else {
+                break
+            }
+        }
+
+        return sBuffer.toString()
+    }
 
     override fun toString(): String {
         return javaClass.name

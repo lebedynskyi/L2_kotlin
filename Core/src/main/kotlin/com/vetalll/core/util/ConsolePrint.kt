@@ -12,7 +12,7 @@ fun printSection(section: String) {
     println(sb.toString())
 }
 
-fun printDebug(tag: String, message: String) {
+fun printDebug(tag: String, message: String?) {
     if (IS_DEBUG) println("$tag: $message")
 }
 

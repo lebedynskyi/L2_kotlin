@@ -1,7 +1,7 @@
 package com.vetalll.login.core
 
 import com.vetalll.core.encryption.ClientCrypt
-import com.vetalll.core.encryption.CryptEngine
+import com.vetalll.core.encryption.BlowFishCrypt
 import com.vetalll.core.encryption.CryptUtil
 import java.math.BigInteger
 import java.security.KeyPair
@@ -36,8 +36,8 @@ class LoginCrypt(
     val rsaPair: KeyPair
 ) : ClientCrypt() {
 
-    private val staticCrypt = CryptEngine(STATIC_BLOW_FISH_KEY)
-    private val generalCrypt = CryptEngine(blowFishKey)
+    private val staticCrypt = BlowFishCrypt(STATIC_BLOW_FISH_KEY)
+    private val generalCrypt = BlowFishCrypt(blowFishKey)
     val scrambleModules = scrambleModulus((rsaPair.public as RSAPublicKey).modulus)
 
     private var isStatic = AtomicBoolean(true)
