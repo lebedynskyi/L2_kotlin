@@ -51,11 +51,11 @@ abstract class ClientConnection(
 
     private var pendingClose = false
 
-    fun write(buff: ByteBuffer) :Int {
+    fun write(buff: ByteBuffer): Int {
         return clientSocket.write(buff)
     }
 
-    fun read(buff: ByteBuffer) : Int{
+    fun read(buff: ByteBuffer): Int {
         return clientSocket.read(buff)
     }
 

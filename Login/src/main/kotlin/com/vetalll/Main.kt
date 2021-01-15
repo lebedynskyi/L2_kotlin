@@ -3,9 +3,9 @@ package com.vetalll
 import com.vetalll.core.config.IS_DEBUG
 import com.vetalll.core.config.YamlReader
 import com.vetalll.core.util.printDebug
-import com.vetalll.login.clients.core.LoginConfig
+import com.vetalll.login.server.core.LoginConfig
 import com.vetalll.core.util.printSection
-import com.vetalll.login.clients.core.LoginServer
+import com.vetalll.login.server.core.LoginServer
 import java.io.FileInputStream
 
 const val LoginConfigResource = "/LoginConfig.yaml"

@@ -4,7 +4,7 @@ import com.vetalll.core.network.WriteablePacket
 
 class RequestServerInfo(
     private val serverId: String
-): WriteablePacket() {
+) : WriteablePacket() {
     override fun write() {
         writeC(0x00)
         writeS(serverId)

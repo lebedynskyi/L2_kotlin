@@ -5,8 +5,8 @@ import com.vetalll.core.config.YamlReader
 import com.vetalll.core.util.printDebug
 import com.vetalll.core.util.printSection
 import com.vetalll.game.GameConfig
-import com.vetalll.gamenetwork.core.GameServerConfig
-import com.vetalll.gamenetwork.core.GameServer
+import com.vetalll.gamenet.core.GameServerConfig
+import com.vetalll.gamenet.core.GameServer
 import java.io.FileInputStream
 
 const val GameServerConfigResource = "/GameServerConfig.yaml"

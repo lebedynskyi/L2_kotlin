@@ -1,7 +1,7 @@
 package com.vetalll.login.bridge.packet.client
 
 import com.vetalll.core.network.ReadablePacket
-import com.vetalll.login.clients.model.ConnectedServerInfo
+import com.vetalll.login.server.model.ConnectedServerInfo
 
 class ServerInfo : ReadablePacket() {
     lateinit var info: ConnectedServerInfo
