@@ -1,12 +1,7 @@
-debug: true
+# The id of server will be displayed in client as Bartz, Hertz and etc
+clientId: 0
+maxOnline: 3000
 
-id: "main"
-loginBlowFishKey: "encryption"
-
-gameServer:
-  serverIp: "*"
-  serverPort: 7777
-
-loginServer:
-  serverIp: "127.0.0.1"
-  serverPort: 3300
+# Game Client config
+ageLimit: 16
+isPvP: yes

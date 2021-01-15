@@ -1,0 +1,12 @@
+debug: true
+
+# Base config
+id: "Main"
+loginBlowFishKey: "encryption"
+gameServer:
+  serverIp: "*"
+  serverPort: 7777
+
+loginServer:
+  serverIp: "127.0.0.1"
+  serverPort: 3300

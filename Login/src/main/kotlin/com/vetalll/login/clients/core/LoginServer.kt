@@ -7,6 +7,7 @@ import com.vetalll.core.network.SelectorThread
 import com.vetalll.core.util.printDebug
 import com.vetalll.login.bridge.BridgeCrypt
 import com.vetalll.login.bridge.BridgeTag
+import com.vetalll.login.bridge.packet.BridgePacketExecutor
 import com.vetalll.login.clients.packets.LoginPacketExecutor
 import java.security.KeyPair
 import java.util.concurrent.Executors
@@ -46,7 +47,7 @@ class LoginServer(
         bridgeSelectorThread = SelectorThread(
             loginConfig.bridgeConfig.bridgeServer,
             BridgeClientFactory(BridgeCrypt(loginConfig.bridgeConfig.blowFishKey.toByteArray())),
-            LoginPacketExecutor(Executors.newFixedThreadPool(1)) as PacketExecutor<Client<*, *>>,
+            BridgePacketExecutor(loginConfig.bridgeConfig, Executors.newFixedThreadPool(1)) as PacketExecutor<Client<*, *>>,
             BridgeTag
         )
         bridgeSelectorThread.start()

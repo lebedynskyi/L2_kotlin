@@ -3,7 +3,7 @@ package com.vetalll.login.clients.packets.handle
 import com.vetalll.core.network.BasePacketHandler
 import com.vetalll.core.util.printDebug
 import com.vetalll.login.clients.core.LoginServerTag
-import com.vetalll.login.clients.model.ServerInfo
+import com.vetalll.login.clients.model.ConnectedServerInfo
 import com.vetalll.login.clients.network.LoginClient
 import com.vetalll.login.clients.packets.server.LoginFail
 import com.vetalll.login.clients.packets.client.RequestServerList
@@ -23,8 +23,8 @@ class HandleRequestServerList(
 
         client.sendPacket(
             ServerList(listOf(
-            ServerInfo(1, "192.168.31.235", 7777, 18, true, 2, 55, true),
-            ServerInfo(2, "127.0.0.2", 7778, 18, false, 1, 1000, false)
+            ConnectedServerInfo(1, "192.168.31.235", 7777, 18, true, 2, 55, true),
+            ConnectedServerInfo(2, "127.0.0.2", 7778, 18, false, 1, 1000, false)
             ))
         )
     }

@@ -1,14 +1,16 @@
-package com.vetalll.login.bridge
+package com.vetalll.gamenetwork.packets
 
 import com.vetalll.core.network.DATA_HEADER_SIZE
 import com.vetalll.core.network.ReadablePacket
 import com.vetalll.core.util.printDebug
-import com.vetalll.login.bridge.packet.client.GameInit
-import com.vetalll.login.bridge.packet.client.ServerInfo
+import com.vetalll.gamenetwork.core.GameCrypt
+import com.vetalll.gamenetwork.core.GameServerTag
+import com.vetalll.gamenetwork.packets.client.AuthLogin
+import com.vetalll.gamenetwork.packets.client.ProtocolVersion
 import java.nio.ByteBuffer
 
-class BridgePacketParser(
-    private val bridgeCrypt: BridgeCrypt
+class GameClientParser(
+    val gameCrypt: GameCrypt
 ) {
     fun parsePacket(buffer: ByteBuffer, tempStringBuffer: StringBuffer): ReadablePacket? {
         if (buffer.position() >= buffer.limit()) {
@@ -17,17 +19,17 @@ class BridgePacketParser(
         val header = buffer.short
         val dataSize = header - DATA_HEADER_SIZE
 
-        bridgeCrypt.decrypt(buffer.array(), buffer.position(), dataSize)
+        gameCrypt.decrypt(buffer.array(), buffer.position(), dataSize)
         return parsePacketByOpCode(buffer, tempStringBuffer)
     }
 
     private fun parsePacketByOpCode(buffer: ByteBuffer, tempStringBuffer: StringBuffer): ReadablePacket? {
         val opCode = buffer.get().toInt()
         val packet = when (opCode) {
-            0x00 -> GameInit()
-            0x01 -> ServerInfo()
+            0x00 -> ProtocolVersion()
+            0x08 -> AuthLogin()
             else -> {
-                printDebug(BridgeTag, "Unknown packet with opcode $opCode")
+                printDebug(GameServerTag, "Unknown packet with opcode $opCode")
                 null
             }
         }

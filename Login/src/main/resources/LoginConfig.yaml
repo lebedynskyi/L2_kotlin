@@ -17,7 +17,7 @@ bridgeConfig:
 
   registeredServers:
     - {
-      id: "main"
+      id: "Main"
     }
     - {
       id: "second"

@@ -41,6 +41,12 @@ open class SelectorThread(
         isRunning = true
         while (isRunning) {
             checkSelectedKeys(socketChannel)
+
+            try {
+                sleep(20)
+            } catch (e: InterruptedException) {
+                e.printStackTrace()
+            }
         }
 
         printDebug(Core, "Shutdown $serverName")

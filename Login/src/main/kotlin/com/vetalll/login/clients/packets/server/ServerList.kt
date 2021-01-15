@@ -1,20 +1,20 @@
 package com.vetalll.login.clients.packets.server
 
 import com.vetalll.core.network.WriteablePacket
-import com.vetalll.login.clients.model.ServerInfo
+import com.vetalll.login.clients.model.ConnectedServerInfo
 import java.net.InetAddress
 
 class ServerList(
-    private val servers: List<ServerInfo>
+    private val connectedServers: List<ConnectedServerInfo>
 ) : WriteablePacket() {
     override fun write() {
         writeC(0x04)
-        writeC(servers.size)
+        writeC(connectedServers.size)
         // Last server
         writeC(0x00)
 
-        servers.forEach {
-            writeC(it.id)
+        connectedServers.forEach {
+            writeC(it.clientId)
             // IP
             val raw = InetAddress.getByName(it.ip).address
             writeC(0xff and raw[0].toInt())
