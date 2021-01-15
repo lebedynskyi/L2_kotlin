@@ -3,6 +3,7 @@ package com.vetalll.login.server.packets.handle
 import com.vetalll.core.network.BasePacketHandler
 import com.vetalll.core.AccountInfo
 import com.vetalll.core.SessionKey
+import com.vetalll.login.login.LoginWorld
 import com.vetalll.login.server.network.ConnectionStatus
 import com.vetalll.login.server.network.LoginClient
 import com.vetalll.login.server.packets.server.LoginFail
@@ -14,7 +15,8 @@ import kotlin.random.Random
 class HandleRequestAuthLogin(
     private val packet: RequestAuthLogin,
     private val client: LoginClient,
-    private val showLicense: Boolean = true
+    private val loginWorld: LoginWorld,
+    private val showLicense: Boolean = true,
 ) : BasePacketHandler() {
 
     override fun run() {
@@ -39,6 +41,7 @@ class HandleRequestAuthLogin(
         client.sessionKey = SessionKey(Random.nextInt(), Random.nextInt(), Random.nextInt(), Random.nextInt())
         client.account = AccountInfo(user, password)
         if (showLicense) {
+            loginWorld.authedUsers.add(client)
             client.sendPacket(LoginOk(client.sessionKey.loginOkID1, client.sessionKey.loginOkID2))
         } else {
             TODO("Skip license is not implemented")

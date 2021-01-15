@@ -2,6 +2,7 @@ package com.vetalll.login.server.packets
 
 import com.vetalll.core.network.PacketExecutor
 import com.vetalll.core.network.ReadablePacket
+import com.vetalll.login.login.LoginWorld
 import com.vetalll.login.server.network.LoginClient
 import com.vetalll.login.server.packets.client.RequestAuthLogin
 import com.vetalll.login.server.packets.client.RequestGGAuth
@@ -14,13 +15,14 @@ import com.vetalll.login.server.packets.handle.HandleRequestServerLogin
 import java.util.concurrent.ExecutorService
 
 class LoginPacketExecutor(
+    private val loginWorld: LoginWorld,
     packetExecutor: ExecutorService
 ) : PacketExecutor<LoginClient>(packetExecutor) {
     override fun handle(client: LoginClient, packet: ReadablePacket): Boolean {
         val handler = when (packet) {
             is RequestGGAuth -> HandleRequestGGAuth(packet, client)
-            is RequestAuthLogin -> HandleRequestAuthLogin(packet, client)
-            is RequestServerList -> HandleRequestServerList(packet, client)
+            is RequestAuthLogin -> HandleRequestAuthLogin(packet, client, loginWorld)
+            is RequestServerList -> HandleRequestServerList(packet, client, loginWorld)
             is RequestServerLogin -> HandleRequestServerLogin(packet, client)
             else -> null
         }

@@ -8,16 +8,18 @@ import com.vetalll.login.bridge.packet.client.GameInit
 import com.vetalll.login.bridge.packet.client.ServerInfo
 import com.vetalll.login.bridge.packet.handle.HandleGameInit
 import com.vetalll.login.bridge.packet.handle.HandleServerInfo
+import com.vetalll.login.login.LoginWorld
 import java.util.concurrent.ExecutorService
 
 class LoginBridgePacketExecutor(
     private val bridgeConfig: BridgeConfig,
+    private val loginWorld: LoginWorld,
     packetExecutor: ExecutorService
 ) : PacketExecutor<LoginBridgeClient>(packetExecutor) {
     override fun handle(clientLogin: LoginBridgeClient, packet: ReadablePacket): Boolean {
         val handler = when (packet) {
             is GameInit -> HandleGameInit(packet, clientLogin, bridgeConfig)
-            is ServerInfo -> HandleServerInfo(packet, clientLogin)
+            is ServerInfo -> HandleServerInfo(packet, clientLogin, loginWorld)
             else -> null
         }
 

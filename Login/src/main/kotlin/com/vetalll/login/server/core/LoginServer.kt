@@ -9,6 +9,7 @@ import com.vetalll.login.bridge.LoginBridgeClientFactory
 import com.vetalll.login.bridge.LoginBridgeCrypt
 import com.vetalll.login.bridge.BridgeTag
 import com.vetalll.login.bridge.packet.LoginBridgePacketExecutor
+import com.vetalll.login.login.LoginWorld
 import com.vetalll.login.server.packets.LoginPacketExecutor
 import java.security.KeyPair
 import java.util.concurrent.Executors
@@ -22,6 +23,8 @@ class LoginServer(
     private lateinit var clientsSelectorThread: SelectorThread
     private lateinit var bridgeSelectorThread: SelectorThread
 
+    private val loginWorld: LoginWorld = LoginWorld()
+
     fun loadServerData() {
         blowFishKeys = Array(16) { CryptUtil.generateByteArray(16) }
         printDebug(LoginServerTag, "Generated ${blowFishKeys.size} blowfish keys")
@@ -34,7 +37,7 @@ class LoginServer(
         clientsSelectorThread = SelectorThread(
             loginConfig.loginServer,
             LoginClientFactory(blowFishKeys, rsaPairs),
-            LoginPacketExecutor(Executors.newFixedThreadPool(2)) as PacketExecutor<Client<*, *>>,
+            LoginPacketExecutor(loginWorld, Executors.newFixedThreadPool(2)) as PacketExecutor<Client<*, *>>,
             LoginServerTag
         )
         clientsSelectorThread.start()
@@ -50,6 +53,7 @@ class LoginServer(
             LoginBridgeClientFactory(LoginBridgeCrypt(loginConfig.bridgeConfig.blowFishKey.toByteArray())),
             LoginBridgePacketExecutor(
                 loginConfig.bridgeConfig,
+                loginWorld,
                 Executors.newFixedThreadPool(1)
             ) as PacketExecutor<Client<*, *>>,
             BridgeTag

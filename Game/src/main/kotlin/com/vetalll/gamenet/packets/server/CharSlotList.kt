@@ -13,14 +13,13 @@ class CharSlotList(
         writeD(slot.size)
 
         slot.forEach {
-//            val it: CharSelectSlot = _slots.get(i)
 //            writeS(it.name)
 //            writeD(it.charId)
 //            writeS(client.account.account)
 //            writeD(_sessionId)
-//            writeD(it.getClanId())
+//            writeD(it.clanId)
 //            writeD(0x00) // Builder level
-//            writeD(it.getSex())
+//            writeD(it.sex)
 //            writeD(it.getRace())
 //            writeD(it.getBaseClassId())
 //            writeD(0x01) // active ??

@@ -5,7 +5,7 @@ import com.vetalll.bridgenet.packets.server.RequestServerInfo
 import com.vetalll.core.network.DATA_HEADER_SIZE
 import com.vetalll.core.network.ReadablePacket
 import com.vetalll.core.util.printDebug
-import com.vetalll.gamenet.core.GameServerBridgeTag
+import com.vetalll.gamenet.core.GameBridgeTag
 import java.nio.ByteBuffer
 
 class GameBridgePacketParser(
@@ -28,7 +28,7 @@ class GameBridgePacketParser(
             0x00 -> RequestServerInfo()
             0x01 -> TODO()
             else -> {
-                printDebug(GameServerBridgeTag, "Unknown packet with opcode $opCode")
+                printDebug(GameBridgeTag, "Unknown packet with opcode $opCode")
                 null
             }
         }

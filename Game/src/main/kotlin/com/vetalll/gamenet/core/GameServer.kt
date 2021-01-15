@@ -9,7 +9,7 @@ import com.vetalll.core.network.PacketExecutor
 import com.vetalll.core.network.SelectorClientThread
 import com.vetalll.core.network.SelectorThread
 import com.vetalll.game.GameConfig
-import com.vetalll.game.World
+import com.vetalll.game.GameWorld
 import java.util.concurrent.Executors
 
 class GameServer(
@@ -19,7 +19,7 @@ class GameServer(
     private lateinit var selectorThread: SelectorThread
     private lateinit var clientSelector: SelectorClientThread
 
-    private val world = World(gameConfig, serverConfig.gameServer)
+    private val world = GameWorld(gameConfig, serverConfig.gameServer)
 
     fun loadServerData() {
 
@@ -29,7 +29,7 @@ class GameServer(
         selectorThread = SelectorThread(
             serverConfig.gameServer,
             GameClientFactory(GameCrypt(CryptUtil.generateByteArray(16))),
-            GamePacketExecutor(Executors.newFixedThreadPool(2)) as PacketExecutor<Client<*, *>>,
+            GamePacketExecutor(world, Executors.newFixedThreadPool(2)) as PacketExecutor<Client<*, *>>,
             GameServerTag
         )
         selectorThread.start()

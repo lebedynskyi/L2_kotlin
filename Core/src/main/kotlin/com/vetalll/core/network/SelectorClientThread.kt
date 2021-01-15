@@ -1,15 +1,15 @@
 package com.vetalll.core.network
 
-import com.vetalll.core.config.Core
+import com.vetalll.core.config.CoreTag
 import com.vetalll.core.config.NetworkConfig
 import com.vetalll.core.util.printDebug
+import java.lang.Exception
 import java.lang.IllegalArgumentException
 import java.net.InetSocketAddress
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.nio.channels.SelectionKey
 import java.nio.channels.Selector
-import java.nio.channels.ServerSocketChannel
 import java.nio.channels.SocketChannel
 
 private val DEFAULT_BYTE_ORDER = ByteOrder.LITTLE_ENDIAN
@@ -44,7 +44,7 @@ open class SelectorClientThread(
             checkSelectedKeys(socketChannel)
         }
 
-        printDebug(Core, "Shutdown $serverName")
+        printDebug(CoreTag, "Shutdown $serverName")
         socketChannel.close()
     }
 
@@ -61,7 +61,6 @@ open class SelectorClientThread(
             connect(serverAddress)
             val client = clientFactory.createClient(clientKey, serverAddress, this)
             clientKey.attach(client)
-            printDebug(Core, "$serverName Connected to ${serverAddress.hostName}:${serverAddress.port}")
         }
     }
 
@@ -75,7 +74,6 @@ open class SelectorClientThread(
             val key = it as SelectionKey
             when (key.readyOps()) {
                 SelectionKey.OP_CONNECT -> finishConnection(key)
-//                SelectionKey.OP_ACCEPT -> this.accept(socketChannel)
                 SelectionKey.OP_READ -> readPackets(key)
                 SelectionKey.OP_WRITE -> writePackets(key)
                 SelectionKey.OP_READ or SelectionKey.OP_WRITE -> {
@@ -90,28 +88,21 @@ open class SelectorClientThread(
     }
 
     private fun finishConnection(key: SelectionKey) {
-//        val client = key.attachment() as Client<*, *>
-        (key.channel() as SocketChannel).finishConnect()
+        try {
+            (key.channel() as SocketChannel).finishConnect()
 
-        // key might have been invalidated on finishConnect()
-        if (key.isValid) {
-            key.interestOps(key.interestOps() or SelectionKey.OP_READ)
-            key.interestOps(key.interestOps() and SelectionKey.OP_CONNECT.inv())
+            // key might have been invalidated on finishConnect()
+            if (key.isValid) {
+                key.interestOps(key.interestOps() or SelectionKey.OP_READ)
+                key.interestOps(key.interestOps() and SelectionKey.OP_CONNECT.inv())
+            }
+            printDebug(CoreTag, "$serverName Connected to ${serverAddress.hostName}:${serverAddress.port}")
+        } catch (e: Exception) {
+            printDebug(CoreTag, "${serverName}: Unable to connect to server. Try latter")
+            sleep(5000)
+            openConnection()
         }
     }
-
-//    private fun accept(socketChannel: SocketChannel) {
-//        val clientSocket = socketChannel.accept()?.apply {
-//            configureBlocking(false)
-//        } ?: return
-//
-//        val clientAddress = clientSocket.remoteAddress as InetSocketAddress
-//        val clientKey = clientSocket.register(selector, SelectionKey.OP_READ)
-//
-//        printDebug(serverName, "Accepted new connection from $clientAddress")
-//        val client = clientFactory.createClient(clientKey, clientAddress, clientSocket)
-//        clientKey.attach(client)
-//    }
 
     private fun readPackets(key: SelectionKey) {
         readBuffer.clear()

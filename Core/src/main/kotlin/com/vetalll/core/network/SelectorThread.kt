@@ -1,6 +1,6 @@
 package com.vetalll.core.network
 
-import com.vetalll.core.config.Core
+import com.vetalll.core.config.CoreTag
 import com.vetalll.core.config.NetworkConfig
 import com.vetalll.core.util.printDebug
 import java.net.InetSocketAddress
@@ -49,7 +49,7 @@ open class SelectorThread(
             }
         }
 
-        printDebug(Core, "Shutdown $serverName")
+        printDebug(CoreTag, "Shutdown $serverName")
         socketChannel.close()
     }
 
@@ -64,7 +64,7 @@ open class SelectorThread(
             configureBlocking(false)
             register(selector, SelectionKey.OP_ACCEPT)
             bind(serverAddress)
-            printDebug(Core, "$serverName is listening at ${serverAddress.hostName}:${serverAddress.port}")
+            printDebug(CoreTag, "$serverName is listening at ${serverAddress.hostName}:${serverAddress.port}")
         }
     }
 
@@ -135,7 +135,7 @@ open class SelectorThread(
             packetExecutor.handle(client, packet)
             printDebug(serverName, "Read packet")
         } else {
-            TODO("Packet null, close connection")
+            printDebug(serverName, "No packet parsed. Skip it")
         }
     }
 

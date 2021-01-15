@@ -7,6 +7,7 @@ import com.vetalll.gamenet.core.GameCrypt
 import com.vetalll.gamenet.core.GameServerTag
 import com.vetalll.gamenet.packets.client.AuthLogin
 import com.vetalll.gamenet.packets.client.ProtocolVersion
+import com.vetalll.gamenet.packets.client.RequestCreateCharacter
 import java.nio.ByteBuffer
 
 class GameClientParser(
@@ -28,8 +29,9 @@ class GameClientParser(
         val packet = when (opCode) {
             0x00 -> ProtocolVersion()
             0x08 -> AuthLogin()
+            0x0e -> RequestCreateCharacter()
             else -> {
-                printDebug(GameServerTag, "Unknown packet with opcode $opCode")
+                printDebug(GameServerTag, "Unknown packet with opcode ${Integer.toHexString(opCode)}")
                 null
             }
         }

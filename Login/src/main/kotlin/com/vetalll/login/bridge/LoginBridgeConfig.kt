@@ -2,7 +2,7 @@ package com.vetalll.login.bridge
 
 import com.vetalll.core.config.NetworkConfig
 
-const val BridgeTag = "LoginGameBridge"
+const val BridgeTag = "LoginBridge"
 
 data class BridgeConfig(
     val blowFishKey: String,
