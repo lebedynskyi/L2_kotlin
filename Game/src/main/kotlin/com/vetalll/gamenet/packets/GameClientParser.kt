@@ -7,6 +7,7 @@ import com.vetalll.gamenet.core.GameCrypt
 import com.vetalll.gamenet.core.GameServerTag
 import com.vetalll.gamenet.packets.client.AuthLogin
 import com.vetalll.gamenet.packets.client.ProtocolVersion
+import com.vetalll.gamenet.packets.client.RequestCharacterTemplates
 import com.vetalll.gamenet.packets.client.RequestCreateCharacter
 import java.nio.ByteBuffer
 
@@ -21,7 +22,13 @@ class GameClientParser(
         val dataSize = header - DATA_HEADER_SIZE
 
         gameCrypt.decrypt(buffer.array(), buffer.position(), dataSize)
-        return parsePacketByOpCode(buffer, tempStringBuffer)
+        try {
+            return parsePacketByOpCode(buffer, tempStringBuffer)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
+        return null
     }
 
     private fun parsePacketByOpCode(buffer: ByteBuffer, tempStringBuffer: StringBuffer): ReadablePacket? {
@@ -29,7 +36,8 @@ class GameClientParser(
         val packet = when (opCode) {
             0x00 -> ProtocolVersion()
             0x08 -> AuthLogin()
-            0x0e -> RequestCreateCharacter()
+            0x0e -> RequestCharacterTemplates()
+            0x0b -> RequestCreateCharacter()
             else -> {
                 printDebug(GameServerTag, "Unknown packet with opcode ${Integer.toHexString(opCode)}")
                 null

@@ -8,7 +8,7 @@ enum class ClassType {
     FIGHTER, MYSTIC, PRIEST
 }
 
-enum class CharacterRace(
+enum class ClassRace(
     val breathMultiplier: Double
 ) {
     HUMAN(1.0),
@@ -18,219 +18,219 @@ enum class CharacterRace(
     DWARF(0.8);
 }
 
-enum class ClassId(race: CharacterRace?, type: ClassType?, level: Int, name: String, parent: ClassId?) {
-    HUMAN_FIGHTER(CharacterRace.HUMAN, ClassType.FIGHTER, 0, "Human Fighter", null), WARRIOR(
-        CharacterRace.HUMAN,
+enum class ClassId(race: ClassRace?, type: ClassType?, level: Int, name: String, parent: ClassId?) {
+    HUMAN_FIGHTER(ClassRace.HUMAN, ClassType.FIGHTER, 0, "Human Fighter", null), WARRIOR(
+        ClassRace.HUMAN,
         ClassType.FIGHTER,
         1,
         "Warrior",
         HUMAN_FIGHTER
     ),
-    GLADIATOR(CharacterRace.HUMAN, ClassType.FIGHTER, 2, "Gladiator", WARRIOR), WARLORD(
-        CharacterRace.HUMAN,
+    GLADIATOR(ClassRace.HUMAN, ClassType.FIGHTER, 2, "Gladiator", WARRIOR), WARLORD(
+        ClassRace.HUMAN,
         ClassType.FIGHTER,
         2,
         "Warlord",
         WARRIOR
     ),
-    KNIGHT(CharacterRace.HUMAN, ClassType.FIGHTER, 1, "Human Knight", HUMAN_FIGHTER), PALADIN(
-        CharacterRace.HUMAN,
+    KNIGHT(ClassRace.HUMAN, ClassType.FIGHTER, 1, "Human Knight", HUMAN_FIGHTER), PALADIN(
+        ClassRace.HUMAN,
         ClassType.FIGHTER,
         2,
         "Paladin",
         KNIGHT
     ),
-    DARK_AVENGER(CharacterRace.HUMAN, ClassType.FIGHTER, 2, "Dark Avenger", KNIGHT), ROGUE(
-        CharacterRace.HUMAN,
+    DARK_AVENGER(ClassRace.HUMAN, ClassType.FIGHTER, 2, "Dark Avenger", KNIGHT), ROGUE(
+        ClassRace.HUMAN,
         ClassType.FIGHTER,
         1,
         "Rogue",
         HUMAN_FIGHTER
     ),
-    TREASURE_HUNTER(CharacterRace.HUMAN, ClassType.FIGHTER, 2, "Treasure Hunter", ROGUE), HAWKEYE(
-        CharacterRace.HUMAN,
+    TREASURE_HUNTER(ClassRace.HUMAN, ClassType.FIGHTER, 2, "Treasure Hunter", ROGUE), HAWKEYE(
+        ClassRace.HUMAN,
         ClassType.FIGHTER,
         2,
         "Hawkeye",
         ROGUE
     ),
-    HUMAN_MYSTIC(CharacterRace.HUMAN, ClassType.MYSTIC, 0, "Human Mystic", null), HUMAN_WIZARD(
-        CharacterRace.HUMAN,
+    HUMAN_MYSTIC(ClassRace.HUMAN, ClassType.MYSTIC, 0, "Human Mystic", null), HUMAN_WIZARD(
+        ClassRace.HUMAN,
         ClassType.MYSTIC,
         1,
         "Human Wizard",
         HUMAN_MYSTIC
     ),
-    SORCERER(CharacterRace.HUMAN, ClassType.MYSTIC, 2, "Sorcerer", HUMAN_WIZARD), NECROMANCER(
-        CharacterRace.HUMAN,
+    SORCERER(ClassRace.HUMAN, ClassType.MYSTIC, 2, "Sorcerer", HUMAN_WIZARD), NECROMANCER(
+        ClassRace.HUMAN,
         ClassType.MYSTIC,
         2,
         "Necromancer",
         HUMAN_WIZARD
     ),
-    WARLOCK(CharacterRace.HUMAN, ClassType.MYSTIC, 2, "Warlock", HUMAN_WIZARD), CLERIC(
-        CharacterRace.HUMAN,
+    WARLOCK(ClassRace.HUMAN, ClassType.MYSTIC, 2, "Warlock", HUMAN_WIZARD), CLERIC(
+        ClassRace.HUMAN,
         ClassType.PRIEST,
         1,
         "Cleric",
         HUMAN_MYSTIC
     ),
-    BISHOP(CharacterRace.HUMAN, ClassType.PRIEST, 2, "Bishop", CLERIC), PROPHET(
-        CharacterRace.HUMAN,
+    BISHOP(ClassRace.HUMAN, ClassType.PRIEST, 2, "Bishop", CLERIC), PROPHET(
+        ClassRace.HUMAN,
         ClassType.PRIEST,
         2,
         "Prophet",
         CLERIC
     ),
-    ELVEN_FIGHTER(CharacterRace.ELF, ClassType.FIGHTER, 0, "Elven Fighter", null), ELVEN_KNIGHT(
-        CharacterRace.ELF,
+    ELVEN_FIGHTER(ClassRace.ELF, ClassType.FIGHTER, 0, "Elven Fighter", null), ELVEN_KNIGHT(
+        ClassRace.ELF,
         ClassType.FIGHTER,
         1,
         "Elven Knight",
         ELVEN_FIGHTER
     ),
-    TEMPLE_KNIGHT(CharacterRace.ELF, ClassType.FIGHTER, 2, "Temple Knight", ELVEN_KNIGHT), SWORD_SINGER(
-        CharacterRace.ELF,
+    TEMPLE_KNIGHT(ClassRace.ELF, ClassType.FIGHTER, 2, "Temple Knight", ELVEN_KNIGHT), SWORD_SINGER(
+        ClassRace.ELF,
         ClassType.FIGHTER,
         2,
         "Sword Singer",
         ELVEN_KNIGHT
     ),
-    ELVEN_SCOUT(CharacterRace.ELF, ClassType.FIGHTER, 1, "Elven Scout", ELVEN_FIGHTER), PLAINS_WALKER(
-        CharacterRace.ELF,
+    ELVEN_SCOUT(ClassRace.ELF, ClassType.FIGHTER, 1, "Elven Scout", ELVEN_FIGHTER), PLAINS_WALKER(
+        ClassRace.ELF,
         ClassType.FIGHTER,
         2,
         "Plains Walker",
         ELVEN_SCOUT
     ),
-    SILVER_RANGER(CharacterRace.ELF, ClassType.FIGHTER, 2, "Silver Ranger", ELVEN_SCOUT), ELVEN_MYSTIC(
-        CharacterRace.ELF,
+    SILVER_RANGER(ClassRace.ELF, ClassType.FIGHTER, 2, "Silver Ranger", ELVEN_SCOUT), ELVEN_MYSTIC(
+        ClassRace.ELF,
         ClassType.MYSTIC,
         0,
         "Elven Mystic",
         null
     ),
-    ELVEN_WIZARD(CharacterRace.ELF, ClassType.MYSTIC, 1, "Elven Wizard", ELVEN_MYSTIC), SPELLSINGER(
-        CharacterRace.ELF,
+    ELVEN_WIZARD(ClassRace.ELF, ClassType.MYSTIC, 1, "Elven Wizard", ELVEN_MYSTIC), SPELLSINGER(
+        ClassRace.ELF,
         ClassType.MYSTIC,
         2,
         "Spellsinger",
         ELVEN_WIZARD
     ),
     ELEMENTAL_SUMMONER(
-        CharacterRace.ELF,
+        ClassRace.ELF,
         ClassType.MYSTIC,
         2,
         "Elemental Summoner",
         ELVEN_WIZARD
     ),
-    ELVEN_ORACLE(CharacterRace.ELF, ClassType.PRIEST, 1, "Elven Oracle", ELVEN_MYSTIC), ELVEN_ELDER(
-        CharacterRace.ELF,
+    ELVEN_ORACLE(ClassRace.ELF, ClassType.PRIEST, 1, "Elven Oracle", ELVEN_MYSTIC), ELVEN_ELDER(
+        ClassRace.ELF,
         ClassType.PRIEST,
         2,
         "Elven Elder",
         ELVEN_ORACLE
     ),
-    DARK_FIGHTER(CharacterRace.DARK_ELF, ClassType.FIGHTER, 0, "Dark Fighter", null), PALUS_KNIGHT(
-        CharacterRace.DARK_ELF,
+    DARK_FIGHTER(ClassRace.DARK_ELF, ClassType.FIGHTER, 0, "Dark Fighter", null), PALUS_KNIGHT(
+        ClassRace.DARK_ELF,
         ClassType.FIGHTER,
         1,
         "Palus Knight",
         DARK_FIGHTER
     ),
     SHILLIEN_KNIGHT(
-        CharacterRace.DARK_ELF,
+        ClassRace.DARK_ELF,
         ClassType.FIGHTER,
         2,
         "Shillien Knight",
         PALUS_KNIGHT
     ),
-    BLADEDANCER(CharacterRace.DARK_ELF, ClassType.FIGHTER, 2, "Bladedancer", PALUS_KNIGHT), ASSASSIN(
-        CharacterRace.DARK_ELF,
+    BLADEDANCER(ClassRace.DARK_ELF, ClassType.FIGHTER, 2, "Bladedancer", PALUS_KNIGHT), ASSASSIN(
+        ClassRace.DARK_ELF,
         ClassType.FIGHTER,
         1,
         "Assassin",
         DARK_FIGHTER
     ),
-    ABYSS_WALKER(CharacterRace.DARK_ELF, ClassType.FIGHTER, 2, "Abyss Walker", ASSASSIN), PHANTOM_RANGER(
-        CharacterRace.DARK_ELF,
+    ABYSS_WALKER(ClassRace.DARK_ELF, ClassType.FIGHTER, 2, "Abyss Walker", ASSASSIN), PHANTOM_RANGER(
+        ClassRace.DARK_ELF,
         ClassType.FIGHTER,
         2,
         "Phantom Ranger",
         ASSASSIN
     ),
-    DARK_MYSTIC(CharacterRace.DARK_ELF, ClassType.MYSTIC, 0, "Dark Mystic", null), DARK_WIZARD(
-        CharacterRace.DARK_ELF,
+    DARK_MYSTIC(ClassRace.DARK_ELF, ClassType.MYSTIC, 0, "Dark Mystic", null), DARK_WIZARD(
+        ClassRace.DARK_ELF,
         ClassType.MYSTIC,
         1,
         "Dark Wizard",
         DARK_MYSTIC
     ),
     SPELLHOWLER(
-        CharacterRace.DARK_ELF,
+        ClassRace.DARK_ELF,
         ClassType.MYSTIC,
         2,
         "Spellhowler",
         DARK_WIZARD
     ),
-    PHANTOM_SUMMONER(CharacterRace.DARK_ELF, ClassType.MYSTIC, 2, "Phantom Summoner", DARK_WIZARD), SHILLIEN_ORACLE(
-        CharacterRace.DARK_ELF,
+    PHANTOM_SUMMONER(ClassRace.DARK_ELF, ClassType.MYSTIC, 2, "Phantom Summoner", DARK_WIZARD), SHILLIEN_ORACLE(
+        ClassRace.DARK_ELF,
         ClassType.PRIEST,
         1,
         "Shillien Oracle",
         DARK_MYSTIC
     ),
     SHILLIEN_ELDER(
-        CharacterRace.DARK_ELF,
+        ClassRace.DARK_ELF,
         ClassType.PRIEST,
         2,
         "Shillien Elder",
         SHILLIEN_ORACLE
     ),
-    ORC_FIGHTER(CharacterRace.ORC, ClassType.FIGHTER, 0, "Orc Fighter", null), ORC_RAIDER(
-        CharacterRace.ORC,
+    ORC_FIGHTER(ClassRace.ORC, ClassType.FIGHTER, 0, "Orc Fighter", null), ORC_RAIDER(
+        ClassRace.ORC,
         ClassType.FIGHTER,
         1,
         "Orc Raider",
         ORC_FIGHTER
     ),
-    DESTROYER(CharacterRace.ORC, ClassType.FIGHTER, 2, "Destroyer", ORC_RAIDER), MONK(
-        CharacterRace.ORC,
+    DESTROYER(ClassRace.ORC, ClassType.FIGHTER, 2, "Destroyer", ORC_RAIDER), MONK(
+        ClassRace.ORC,
         ClassType.FIGHTER,
         1,
         "Monk",
         ORC_FIGHTER
     ),
-    TYRANT(CharacterRace.ORC, ClassType.FIGHTER, 2, "Tyrant", MONK), ORC_MYSTIC(
-        CharacterRace.ORC,
+    TYRANT(ClassRace.ORC, ClassType.FIGHTER, 2, "Tyrant", MONK), ORC_MYSTIC(
+        ClassRace.ORC,
         ClassType.MYSTIC,
         0,
         "Orc Mystic",
         null
     ),
-    ORC_SHAMAN(CharacterRace.ORC, ClassType.MYSTIC, 1, "Orc Shaman", ORC_MYSTIC), OVERLORD(
-        CharacterRace.ORC,
+    ORC_SHAMAN(ClassRace.ORC, ClassType.MYSTIC, 1, "Orc Shaman", ORC_MYSTIC), OVERLORD(
+        ClassRace.ORC,
         ClassType.MYSTIC,
         2,
         "Overlord",
         ORC_SHAMAN
     ),
-    WARCRYER(CharacterRace.ORC, ClassType.MYSTIC, 2, "Warcryer", ORC_SHAMAN), DWARVEN_FIGHTER(
-        CharacterRace.DWARF,
+    WARCRYER(ClassRace.ORC, ClassType.MYSTIC, 2, "Warcryer", ORC_SHAMAN), DWARVEN_FIGHTER(
+        ClassRace.DWARF,
         ClassType.FIGHTER,
         0,
         "Dwarven Fighter",
         null
     ),
-    SCAVENGER(CharacterRace.DWARF, ClassType.FIGHTER, 1, "Scavenger", DWARVEN_FIGHTER), BOUNTY_HUNTER(
-        CharacterRace.DWARF,
+    SCAVENGER(ClassRace.DWARF, ClassType.FIGHTER, 1, "Scavenger", DWARVEN_FIGHTER), BOUNTY_HUNTER(
+        ClassRace.DWARF,
         ClassType.FIGHTER,
         2,
         "Bounty Hunter",
         SCAVENGER
     ),
-    ARTISAN(CharacterRace.DWARF, ClassType.FIGHTER, 1, "Artisan", DWARVEN_FIGHTER), WARSMITH(
-        CharacterRace.DWARF,
+    ARTISAN(ClassRace.DWARF, ClassType.FIGHTER, 1, "Artisan", DWARVEN_FIGHTER), WARSMITH(
+        ClassRace.DWARF,
         ClassType.FIGHTER,
         2,
         "Warsmith",
@@ -306,127 +306,127 @@ enum class ClassId(race: CharacterRace?, type: ClassType?, level: Int, name: Str
         "dummy 30",
         null
     ),
-    DUELIST(CharacterRace.HUMAN, ClassType.FIGHTER, 3, "Duelist", GLADIATOR), DREADNOUGHT(
-        CharacterRace.HUMAN,
+    DUELIST(ClassRace.HUMAN, ClassType.FIGHTER, 3, "Duelist", GLADIATOR), DREADNOUGHT(
+        ClassRace.HUMAN,
         ClassType.FIGHTER,
         3,
         "Dreadnought",
         WARLORD
     ),
-    PHOENIX_KNIGHT(CharacterRace.HUMAN, ClassType.FIGHTER, 3, "Phoenix Knight", PALADIN), HELL_KNIGHT(
-        CharacterRace.HUMAN,
+    PHOENIX_KNIGHT(ClassRace.HUMAN, ClassType.FIGHTER, 3, "Phoenix Knight", PALADIN), HELL_KNIGHT(
+        ClassRace.HUMAN,
         ClassType.FIGHTER,
         3,
         "Hell Knight",
         DARK_AVENGER
     ),
-    SAGGITARIUS(CharacterRace.HUMAN, ClassType.FIGHTER, 3, "Sagittarius", HAWKEYE), ADVENTURER(
-        CharacterRace.HUMAN,
+    SAGGITARIUS(ClassRace.HUMAN, ClassType.FIGHTER, 3, "Sagittarius", HAWKEYE), ADVENTURER(
+        ClassRace.HUMAN,
         ClassType.FIGHTER,
         3,
         "Adventurer",
         TREASURE_HUNTER
     ),
-    ARCHMAGE(CharacterRace.HUMAN, ClassType.MYSTIC, 3, "Archmage", SORCERER), SOULTAKER(
-        CharacterRace.HUMAN,
+    ARCHMAGE(ClassRace.HUMAN, ClassType.MYSTIC, 3, "Archmage", SORCERER), SOULTAKER(
+        ClassRace.HUMAN,
         ClassType.MYSTIC,
         3,
         "Soultaker",
         NECROMANCER
     ),
-    ARCANA_LORD(CharacterRace.HUMAN, ClassType.MYSTIC, 3, "Arcana Lord", WARLOCK), CARDINAL(
-        CharacterRace.HUMAN,
+    ARCANA_LORD(ClassRace.HUMAN, ClassType.MYSTIC, 3, "Arcana Lord", WARLOCK), CARDINAL(
+        ClassRace.HUMAN,
         ClassType.PRIEST,
         3,
         "Cardinal",
         BISHOP
     ),
-    HIEROPHANT(CharacterRace.HUMAN, ClassType.PRIEST, 3, "Hierophant", PROPHET), EVAS_TEMPLAR(
-        CharacterRace.ELF,
+    HIEROPHANT(ClassRace.HUMAN, ClassType.PRIEST, 3, "Hierophant", PROPHET), EVAS_TEMPLAR(
+        ClassRace.ELF,
         ClassType.FIGHTER,
         3,
         "Eva's Templar",
         TEMPLE_KNIGHT
     ),
-    SWORD_MUSE(CharacterRace.ELF, ClassType.FIGHTER, 3, "Sword Muse", SWORD_SINGER), WIND_RIDER(
-        CharacterRace.ELF,
+    SWORD_MUSE(ClassRace.ELF, ClassType.FIGHTER, 3, "Sword Muse", SWORD_SINGER), WIND_RIDER(
+        ClassRace.ELF,
         ClassType.FIGHTER,
         3,
         "Wind Rider",
         PLAINS_WALKER
     ),
     MOONLIGHT_SENTINEL(
-        CharacterRace.ELF,
+        ClassRace.ELF,
         ClassType.FIGHTER,
         3,
         "Moonlight Sentinel",
         SILVER_RANGER
     ),
-    MYSTIC_MUSE(CharacterRace.ELF, ClassType.MYSTIC, 3, "Mystic Muse", SPELLSINGER), ELEMENTAL_MASTER(
-        CharacterRace.ELF,
+    MYSTIC_MUSE(ClassRace.ELF, ClassType.MYSTIC, 3, "Mystic Muse", SPELLSINGER), ELEMENTAL_MASTER(
+        ClassRace.ELF,
         ClassType.MYSTIC,
         3,
         "Elemental Master",
         ELEMENTAL_SUMMONER
     ),
-    EVAS_SAINT(CharacterRace.ELF, ClassType.PRIEST, 3, "Eva's Saint", ELVEN_ELDER), SHILLIEN_TEMPLAR(
-        CharacterRace.DARK_ELF,
+    EVAS_SAINT(ClassRace.ELF, ClassType.PRIEST, 3, "Eva's Saint", ELVEN_ELDER), SHILLIEN_TEMPLAR(
+        ClassRace.DARK_ELF,
         ClassType.FIGHTER,
         3,
         "Shillien Templar",
         SHILLIEN_KNIGHT
     ),
     SPECTRAL_DANCER(
-        CharacterRace.DARK_ELF,
+        ClassRace.DARK_ELF,
         ClassType.FIGHTER,
         3,
         "Spectral Dancer",
         BLADEDANCER
     ),
     GHOST_HUNTER(
-        CharacterRace.DARK_ELF,
+        ClassRace.DARK_ELF,
         ClassType.FIGHTER,
         3,
         "Ghost Hunter",
         ABYSS_WALKER
     ),
     GHOST_SENTINEL(
-        CharacterRace.DARK_ELF,
+        ClassRace.DARK_ELF,
         ClassType.FIGHTER,
         3,
         "Ghost Sentinel",
         PHANTOM_RANGER
     ),
     STORM_SCREAMER(
-        CharacterRace.DARK_ELF,
+        ClassRace.DARK_ELF,
         ClassType.MYSTIC,
         3,
         "Storm Screamer",
         SPELLHOWLER
     ),
-    SPECTRAL_MASTER(CharacterRace.DARK_ELF, ClassType.MYSTIC, 3, "Spectral Master", PHANTOM_SUMMONER), SHILLIEN_SAINT(
-        CharacterRace.DARK_ELF,
+    SPECTRAL_MASTER(ClassRace.DARK_ELF, ClassType.MYSTIC, 3, "Spectral Master", PHANTOM_SUMMONER), SHILLIEN_SAINT(
+        ClassRace.DARK_ELF,
         ClassType.PRIEST,
         3,
         "Shillien Saint",
         SHILLIEN_ELDER
     ),
-    TITAN(CharacterRace.ORC, ClassType.FIGHTER, 3, "Titan", DESTROYER), GRAND_KHAVATARI(
-        CharacterRace.ORC,
+    TITAN(ClassRace.ORC, ClassType.FIGHTER, 3, "Titan", DESTROYER), GRAND_KHAVATARI(
+        ClassRace.ORC,
         ClassType.FIGHTER,
         3,
         "Grand Khavatari",
         TYRANT
     ),
-    DOMINATOR(CharacterRace.ORC, ClassType.MYSTIC, 3, "Dominator", OVERLORD), DOOMCRYER(
-        CharacterRace.ORC,
+    DOMINATOR(ClassRace.ORC, ClassType.MYSTIC, 3, "Dominator", OVERLORD), DOOMCRYER(
+        ClassRace.ORC,
         ClassType.MYSTIC,
         3,
         "Doom Cryer",
         WARCRYER
     ),
-    FORTUNE_SEEKER(CharacterRace.DWARF, ClassType.FIGHTER, 3, "Fortune Seeker", BOUNTY_HUNTER), MAESTRO(
-        CharacterRace.DWARF,
+    FORTUNE_SEEKER(ClassRace.DWARF, ClassType.FIGHTER, 3, "Fortune Seeker", BOUNTY_HUNTER), MAESTRO(
+        ClassRace.DWARF,
         ClassType.FIGHTER,
         3,
         "Maestro",
@@ -439,8 +439,8 @@ enum class ClassId(race: CharacterRace?, type: ClassType?, level: Int, name: Str
     /** The ID of the class  */
     val id: Int
 
-    /** The _root_ide_package_.com.vetalll.gamenet.model.character.CharacterRace object of the class  */
-    private val _race: CharacterRace?
+    /** The _root_ide_package_.com.vetalll.gamenet.model.character.ClassRace object of the class  */
+    private val _race: ClassRace?
 
     /** The ClassType of the class  */
     private val _type: ClassType?
@@ -461,10 +461,10 @@ enum class ClassId(race: CharacterRace?, type: ClassType?, level: Int, name: Str
     private var availableSubClasses: HashSet<ClassId> = HashSet()
 
     /**
-     * Returns the [_root_ide_package_.com.vetalll.gamenet.model.character.CharacterRace] of the [ClassId].
-     * @return [_root_ide_package_.com.vetalll.gamenet.model.character.CharacterRace] : The race.
+     * Returns the [_root_ide_package_.com.vetalll.gamenet.model.character.ClassRace] of the [ClassId].
+     * @return [_root_ide_package_.com.vetalll.gamenet.model.character.ClassRace] : The race.
      */
-    val race: CharacterRace?
+    val race: ClassRace?
         get() = _race
 
     /**
@@ -517,8 +517,8 @@ enum class ClassId(race: CharacterRace?, type: ClassType?, level: Int, name: Str
             if (classId == OVERLORD || classId == WARSMITH || classId == this) continue
 
             // Elves may not sub Dark Elves and vice versa
-            if (_race === CharacterRace.ELF && classId._race === CharacterRace.DARK_ELF ||
-                _race === CharacterRace.DARK_ELF && classId._race === CharacterRace.ELF) {
+            if (_race === ClassRace.ELF && classId._race === ClassRace.DARK_ELF ||
+                _race === ClassRace.DARK_ELF && classId._race === ClassRace.ELF) {
                 continue
             }
             availableSubClasses.add(classId)

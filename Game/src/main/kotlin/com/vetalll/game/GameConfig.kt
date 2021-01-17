@@ -6,3 +6,6 @@ data class GameConfig(
     val ageLimit: Int,
     val isPvP: Boolean
 )
+
+
+

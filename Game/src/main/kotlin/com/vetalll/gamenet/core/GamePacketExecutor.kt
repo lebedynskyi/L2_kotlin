@@ -6,8 +6,10 @@ import com.vetalll.game.GameWorld
 import com.vetalll.gamenet.packets.client.AuthLogin
 import com.vetalll.gamenet.packets.handle.HandleProtocolVersion
 import com.vetalll.gamenet.packets.client.ProtocolVersion
+import com.vetalll.gamenet.packets.client.RequestCharacterTemplates
 import com.vetalll.gamenet.packets.client.RequestCreateCharacter
 import com.vetalll.gamenet.packets.handle.HandleAuthLogin
+import com.vetalll.gamenet.packets.handle.HandleRequestCharacterTemplates
 import com.vetalll.gamenet.packets.handle.HandleRequestCreateCharacter
 import java.util.concurrent.ExecutorService
 
@@ -19,7 +21,8 @@ class GamePacketExecutor(
         val handler = when (packet) {
             is ProtocolVersion -> HandleProtocolVersion(packet, client)
             is AuthLogin -> HandleAuthLogin(packet, client)
-            is RequestCreateCharacter -> HandleRequestCreateCharacter(client, gameWorld)
+            is RequestCharacterTemplates -> HandleRequestCharacterTemplates(client, gameWorld)
+            is RequestCreateCharacter -> HandleRequestCreateCharacter(packet, client)
             else -> null
         }
 

@@ -6,7 +6,8 @@ import com.vetalll.gamenet.model.CharSlot
 
 class CharSlotList(
     val client: GameClient,
-    val slot: List<CharSlot>
+    val slot: List<CharSlot>,
+    val sessionId: Int
 ) : WriteablePacket() {
     override fun write() {
         writeC(0x13)
